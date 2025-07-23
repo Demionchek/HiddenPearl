@@ -1,0 +1,58 @@
+using AI.States;
+using Animations;
+using UnityEngine;
+
+namespace AI
+{
+    public class AttackStateAI : BaseStateAI
+    {
+        public override void EnterState()
+        {
+            AttackTrigger();
+            animatonController.SetAnimatorFloat(AnimationController.SPEED_S, 0);
+        }
+        public override void ExitState() { }
+
+        public override void StateUpdate()
+        {
+            if (baseEnemy.target != null)
+            {
+                Vector2 direction = baseEnemy.target.position - baseEnemy.transform.position;
+                float distance = direction.magnitude;
+
+                if (distance > baseEnemy.stoppingDistance)
+                {
+                    direction.Normalize();
+                    baseEnemy.rb.linearVelocity = direction * baseEnemy.speed;
+                    baseEnemy.canAttack = false;
+                    baseEnemy.ChangeState<ChaseStateAI>();
+                    return;
+                }
+            }
+
+            if (baseEnemy.currentAttackTime > baseEnemy.lastAttackTime + baseEnemy.attackDelay)
+            {
+                AttackTrigger();
+            }
+
+            if (!animatonController.isAttacking && !baseEnemy.canSeeTarget)
+            {
+                baseEnemy.ChangeState<IdleStateAI>();
+            }
+        }
+
+        private void AttackTrigger()
+        {
+            animatonController.SetAnimatorTrigger(AnimationController.ATTACK_S);
+            animatonController.isAttacking = true;
+            baseEnemy.lastAttackTime = Time.time;
+            if (baseEnemy.target != null && baseEnemy.canSeeTarget)
+            {
+                Vector2 dir = baseEnemy.target.transform.position - baseEnemy.transform.position;
+                animatonController.GetSpriteRenderer().flipX = dir.x < 0;
+            }
+        }
+
+        public override void StateFixedUpdate() { }
+    }
+}
