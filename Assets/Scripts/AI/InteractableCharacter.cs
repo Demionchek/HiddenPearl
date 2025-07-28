@@ -17,7 +17,6 @@ namespace AI
         [SerializeField] private DialogType dialogType;
         [Space(5)]
         [SerializeField] private bool unlocksShape = false;
-        [SerializeField] private PlayerController.Shape shape;
         [Space(5)]
         [SerializeField] private float interactDelay = 0.5f;
         [Space(5)]
@@ -86,12 +85,6 @@ namespace AI
 
             if (canAttack)
                 animator.SetTrigger("Attack");
-
-            // if (canHit)
-            //     CircleCastAll();
-
-            if(unlocksShape)
-                playerController.UnlockShape(shape);
 
             if (isCheckPoint)
                 checkPoints.SetCurrentCheckpoint(checkPointIndex);

@@ -46,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -125,12 +125,12 @@ TextureImporter:
       name: Boy_idle_0
       rect:
         serializedVersion: 2
-        x: 3
+        x: 4
         y: 0
-        width: 17
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 15
+        height: 25
+      alignment: 9
+      pivot: {x: 0.55, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -147,12 +147,12 @@ TextureImporter:
       name: Boy_idle_1
       rect:
         serializedVersion: 2
-        x: 52
+        x: 53
         y: 0
-        width: 16
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 14
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -169,12 +169,12 @@ TextureImporter:
       name: Boy_idle_2
       rect:
         serializedVersion: 2
-        x: 100
+        x: 101
         y: 0
-        width: 16
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 14
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -191,12 +191,12 @@ TextureImporter:
       name: Boy_idle_3
       rect:
         serializedVersion: 2
-        x: 148
+        x: 149
         y: 0
-        width: 16
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 14
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -213,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b7b7a0c30c318d649a5bf727256b52a8
     internalID: 0
     vertices: []
     indices: 
@@ -221,7 +221,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Boy_idle_0: 57025272137540003
       Boy_idle_1: 6701961909392487424

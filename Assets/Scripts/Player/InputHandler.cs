@@ -8,17 +8,11 @@ namespace Player
     {
         public Vector2 MoveInput { get; private set; }
         public bool JumpPressed { get; private set; }
-        public bool BarkPressed { get; private set; }
-        public bool ShapeDog { get; private set; }
-        public bool ShapeBird { get; private set; }
-        public bool ShapeRat { get; private set; }
+        public bool AttackPressed { get; private set; }
 
         private InputAction moveAction;
         private InputAction jumpAction;
-        private InputAction barkAction;
-        private InputAction shapeDogAction;
-        private InputAction shapeBirdAction;
-        private InputAction shapeRatAction;
+        private InputAction attackAction;
 
         private void Awake()
         {
@@ -26,10 +20,7 @@ namespace Player
 
             moveAction = playerInput.actions["Move"];
             jumpAction = playerInput.actions["Jump"];
-            barkAction = playerInput.actions["Bark"];
-            shapeDogAction = playerInput.actions["ShapeDog"];
-            shapeBirdAction = playerInput.actions["ShapeBird"];
-            shapeRatAction = playerInput.actions["ShapeRat"];
+            attackAction = playerInput.actions["Attack"];
         }
 
         private void Update()
@@ -41,10 +32,7 @@ namespace Player
         {
             // Автоматический сброс триггеров в конце кадра
             JumpPressed = false;
-            BarkPressed = false;
-            ShapeDog = false;
-            ShapeBird = false;
-            ShapeRat = false;
+            AttackPressed = false;
         }
 
         private void OnJump(InputValue context)
@@ -52,23 +40,9 @@ namespace Player
             if (context.isPressed) JumpPressed = true;
         }
 
-        private void OnBark(InputValue context)
+        private void OnФеефсл(InputValue context)
         {
-            if (context.isPressed) BarkPressed = true;
-        }
-
-        private void OnShapeDog(InputValue context)
-        {
-            if (context.isPressed) ShapeDog = true;
-        }
-
-        private void OnShapeBird(InputValue context)
-        {
-            if (context.isPressed) ShapeBird = true;
-        }
-        private void OnShapeRat(InputValue context)
-        {
-            if (context.isPressed) ShapeRat = true;
+            if (context.isPressed) AttackPressed = true;
         }
     }
 }

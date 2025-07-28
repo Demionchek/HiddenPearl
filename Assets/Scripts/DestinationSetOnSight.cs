@@ -93,13 +93,13 @@ namespace DefaultNamespace
                     }
                 }
 
-                if (!ignorePlayerShape && !canSeeTarget && playerController != null)
-                {
-                    if ( playerController.CurrentShape == PlayerController.Shape.Rat)
-                    {
-                        continue;
-                    }
-                }
+                // if (!ignorePlayerShape && !canSeeTarget && playerController != null)
+                // {
+                //     if ( playerController.CurrentShape == PlayerController.Shape.Rat)
+                //     {
+                //         continue;
+                //     }
+                // }
 
                 Transform potentialTarget = targetCollider.transform;
                 Vector2 potentialTargetPos = new Vector2(potentialTarget.position.x, potentialTarget.position.y);

@@ -21,13 +21,6 @@ namespace Animations
             UpdateSpriteDirection();
         }
 
-        public void OnShapeChanged(PlayerController.Shape newShape)
-        {
-            if (animator == null) return;
-
-            animator.SetInteger("Shape", (int)newShape);
-        }
-
         public void SetMovementParameters(float speed, bool isGrounded)
         {
             animator.SetFloat(SPEED_S, speed);

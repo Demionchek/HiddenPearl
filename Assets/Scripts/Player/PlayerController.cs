@@ -14,41 +14,20 @@ namespace Player
     public class PlayerController : MonoBehaviour, IHittable
     {
         [Header("Movement Settings")]
-        [SerializeField] private float dogSpeed = 8f;
-        [SerializeField] private float ratSpeed = 6f;
-        [SerializeField] private float birdFlySpeed = 5f;
-        [SerializeField] private float birdAscendSpeed = 10f;
-        [SerializeField] private float jumpForce = 12f;
+        [SerializeField] private float speed = 2f;
+        [SerializeField] private float jumpForce = 2f;
         [SerializeField] private float interactDelay = 0.5f;
 
-        [Header("Collider Settings")]
-        [SerializeField] private Vector2 dogColliderSize = new Vector2(1f, 2f);
-        [SerializeField] private Vector2 dogColliderOffset = new Vector2(0, 0.09f);
-        [SerializeField] private Vector2 ratColliderSize = new Vector2(0.8f, 0.6f);
-        [SerializeField] private Vector2 ratColliderOffset = new Vector2(0, 0.09f);
-        [SerializeField] private Vector2 birdColliderSize = new Vector2(0.8f, 0.5f);
-        [SerializeField] private Vector2 birdColliderOffset = new Vector2(0, 0.09f);
-        [SerializeField] private Collider2D interactCollider_R;
-        [SerializeField] private Collider2D interactCollider_L;
-
         [Header("Other Settings")]
-        [SerializeField] private RandomSoundPlayer randomWoofPlayer;
+        [SerializeField] private RandomSoundPlayer randomAttackPlayerSound;
+        [SerializeField] private RandomSoundPlayer randomHitPlayerSound;
 
         [Inject]
         private InputHandler inputHandler;
         [Inject]
         private DialogueSystem dialogueSystem;
-
-        [System.Serializable]
-        public class ShapeSettings
-        {
-            public Shape shapeType;
-            public bool isUnlocked = false;
-        }
-
-        [Header("Shape Settings")]
-        [SerializeField] private List<ShapeSettings> shapes;
-        [SerializeField] private Shape startingShape = Shape.Dog;
+        [Inject]
+        private CheckPoints checkPoints;
 
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
@@ -56,19 +35,7 @@ namespace Player
         private PlayerAnimationController playerAnimationController;
         public bool isDead {get; private set;}
         private bool isFlip = false;
-        private bool isEnoughtSpaceForShape = false;
 
-        private LayerMask ratMask;
-        private LayerMask dogMask;
-        private LayerMask birdMask;
-
-        [Inject]
-        private CheckPoints checkPoints;
-
-        public enum Shape { Dog, Rat, Bird }
-        public Shape CurrentShape { get; private set; } = Shape.Dog;
-
-        public List<ShapeSettings> Shapes { get => shapes; set => shapes = value; }
 
         public bool IsGrounded { get; private set; }
         public float CurrentSpeed { get; private set; }
@@ -77,8 +44,6 @@ namespace Player
         private Vector2 effectorVelocity = Vector2.zero;
 
         public event Action OnRevive;
-        public event Action<Shape> OnShapeUnlocked;
-        public event Action<Shape> OnShapeChanged;
 
         private void Awake()
         {
@@ -86,25 +51,6 @@ namespace Player
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             boxTriggerCollider = GetComponent<BoxCollider2D>();
             playerAnimationController = GetComponent<PlayerAnimationController>();
-
-            // Инициализация начальной формы
-            CurrentShape = startingShape;
-            ChangeShape(startingShape);
-        }
-
-        public void UnlockShape(Shape shapeToUnlock)
-        {
-            foreach (var shape in shapes)
-            {
-                if (shape.shapeType == shapeToUnlock)
-                {
-                    shape.isUnlocked = true;
-                    OnShapeUnlocked?.Invoke(shapeToUnlock);
-                    Debug.Log($"Форма {shapeToUnlock} теперь доступна!");
-                    return;
-                }
-            }
-            Debug.LogWarning($"Форма {shapeToUnlock} не найдена в настройках!");
         }
 
         private void Update()
@@ -113,21 +59,8 @@ namespace Player
             if (playerAnimationController.isAttacking ||
                 isDead || dialogueSystem.isDialogRunning) return;
 
-            HandleShapeChange();
-
-            switch (CurrentShape)
-            {
-                case Shape.Dog:
-                    HandleBarking();
-                    HandleJump();
-                    break;
-                case Shape.Rat:
-                    HandleJump();
-                    break;
-                case Shape.Bird:
-                    break;
-            }
-
+            HandleAttack();
+            HandleJump();
             UpdateAnimationParameters();
         }
 
@@ -138,25 +71,12 @@ namespace Player
 
             if (playerAnimationController.isAttacking) return;
 
-            CheckIfEnoughSpace();
-
-            switch (CurrentShape)
-            {
-                case Shape.Dog:
-                    HandleGroundMovement();
-                    break;
-                case Shape.Rat:
-                    HandleGroundMovement();
-                    break;
-                case Shape.Bird:
-                    HandleFlyingMovement();
-                    break;
-            }
+            HandleGroundMovement();
         }
 
         private void HandleGroundMovement()
         {
-            CurrentSpeed = CurrentShape == Shape.Dog ? dogSpeed : ratSpeed;
+            CurrentSpeed = speed;
 
             // Проверяем, есть ли стена перед игроком в направлении движения
             bool isWallInFront = false;
@@ -185,14 +105,6 @@ namespace Player
             rb.linearVelocity = new Vector2(horizontalVelocity, rb.linearVelocity.y) + effectorVelocity;
         }
 
-        private void HandleFlyingMovement()
-        {
-            rb.linearVelocity = new Vector2(
-                inputHandler.MoveInput.x * birdFlySpeed,
-                inputHandler.MoveInput.y * birdAscendSpeed
-            ) + effectorVelocity;
-        }
-
         private void HandleJump()
         {
             if (inputHandler.JumpPressed && IsGrounded)
@@ -201,15 +113,14 @@ namespace Player
             }
         }
 
-        private void HandleBarking()
+        private void HandleAttack()
         {
-            bool collidersActive = interactCollider_R.enabled || interactCollider_L.enabled;
-            if (inputHandler.BarkPressed && !collidersActive)
+            if (inputHandler.AttackPressed)
             {
                 playerAnimationController.SetTrigger("Attack");
                 playerAnimationController.isAttacking = true;
 
-                StartCoroutine(PlayWoofWithDelay());
+                StartCoroutine(PlayAttackSoundWithDelay());
 
                 Vector2 origin = transform.position + new Vector3(0, 0.15f, 0);
                 float radius = 0.2f;
@@ -227,26 +138,30 @@ namespace Player
                     return;
                 }
 
-                // Перебираем все найденные коллайдеры
                 foreach (Collider2D collider in hitColliders)
                 {
                     Debug.Log($"Обнаружен объект: {collider.name}");
 
-                    // Проверяем, есть ли у него компонент для взаимодействия
                     IInteractable interactable = collider.GetComponent<IInteractable>();
                     if (interactable != null)
                     {
-                        interactable.Interact(); // Взаимодействуем
+                        interactable.Interact();
+                    }
+
+                    IHittable hit = collider.GetComponent<IHittable>();
+                    if (hit != null)
+                    {
+                        hit.Hit();
                     }
                 }
             }
         }
 
-        private IEnumerator PlayWoofWithDelay()
+        private IEnumerator PlayAttackSoundWithDelay()
         {
             yield return new WaitForSeconds(0.1f);
-            if (randomWoofPlayer != null)
-                randomWoofPlayer.PlayRandomSoundNow();
+            if (randomAttackPlayerSound != null)
+                randomAttackPlayerSound.PlayRandomSoundNow();
         }
 
         // Отрисовка радиуса в редакторе
@@ -260,133 +175,6 @@ namespace Player
 
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(origin, radius);
-        }
-
-        private IEnumerator DisableCollidersWithDelay(float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            interactCollider_R.enabled = false;
-            interactCollider_L.enabled = false;
-        }
-
-        private void HandleShapeChange()
-        {
-            if (!isEnoughtSpaceForShape) return;
-
-            if (inputHandler.ShapeDog && CheckAvailableShape(Shape.Dog))
-            {
-                ChangeShape(Shape.Dog);
-            }
-
-            if (inputHandler.ShapeBird && CheckAvailableShape(Shape.Bird))
-            {
-                ChangeShape(Shape.Bird);
-            }
-
-            if (inputHandler.ShapeRat && CheckAvailableShape(Shape.Rat))
-            {
-                ChangeShape(Shape.Rat);
-            }
-        }
-
-        //Check if there is nothing above before change shape to avoid stuck
-        private void CheckIfEnoughSpace()
-        {
-            Vector2 origin = ratColliderOffset + (Vector2)transform.position;
-            int layerMask = 1 << LayerMask.NameToLayer("Ground");
-            float distance = (dogColliderOffset.y + transform.position.y + dogColliderSize.y / 2) - origin.y;
-
-            Debug.DrawRay(origin,
-                Vector2.up * distance, Color.red);
-
-            if (Physics2D.Raycast(origin, Vector2.up, distance, layerMask))
-            {
-                isEnoughtSpaceForShape = false;
-                return;
-            }
-            isEnoughtSpaceForShape = true;
-        }
-
-        private bool CheckAvailableShape(Shape shape)
-        {
-            foreach (var shapeSettings in shapes)
-            {
-                if(shapeSettings.shapeType == shape && shapeSettings.isUnlocked == true)
-                    return true;
-            }
-
-            return false;
-        }
-
-        private Shape GetNextAvailableShape()
-        {
-            int currentIndex = (int)CurrentShape;
-            int nextIndex = (currentIndex + 1) % System.Enum.GetValues(typeof(Shape)).Length;
-
-            // Поиск следующей открытой формы
-            for (int i = 0; i < System.Enum.GetValues(typeof(Shape)).Length; i++)
-            {
-                Shape potentialShape = (Shape)nextIndex;
-                if (IsShapeUnlocked(potentialShape))
-                {
-                    return potentialShape;
-                }
-
-                nextIndex = (nextIndex + 1) % System.Enum.GetValues(typeof(Shape)).Length;
-            }
-
-            return CurrentShape; // Если нет других открытых форм
-        }
-
-        private bool IsShapeUnlocked(Shape shape)
-        {
-            foreach (var shapeSetting in shapes)
-            {
-                if (shapeSetting.shapeType == shape)
-                {
-                    return shapeSetting.isUnlocked;
-                }
-            }
-            return false;
-        }
-
-        public void ChangeShape(Shape newShape)
-        {
-            CurrentShape = newShape;
-
-            switch (CurrentShape)
-            {
-                case Shape.Dog:
-                    capsuleCollider.size = dogColliderSize;
-                    capsuleCollider.direction = CapsuleDirection2D.Horizontal;
-                    capsuleCollider.offset = dogColliderOffset;
-                    boxTriggerCollider.size = dogColliderSize;
-                    boxTriggerCollider.offset = dogColliderOffset;
-                    rb.gravityScale = 2.5f;
-                    gameObject.layer = LayerMask.NameToLayer("Player");
-                    break;
-                case Shape.Rat:
-                    capsuleCollider.size = ratColliderSize;
-                    capsuleCollider.direction = CapsuleDirection2D.Horizontal;
-                    capsuleCollider.offset = ratColliderOffset;
-                    boxTriggerCollider.size = ratColliderSize;
-                    boxTriggerCollider.offset = ratColliderOffset;
-                    rb.gravityScale = 2.5f;
-                    gameObject.layer = LayerMask.NameToLayer("Rat");
-                    break;
-                case Shape.Bird:
-                    capsuleCollider.size = birdColliderSize;
-                    capsuleCollider.direction = CapsuleDirection2D.Vertical;
-                    capsuleCollider.offset = birdColliderOffset;
-                    boxTriggerCollider.size = birdColliderSize;
-                    boxTriggerCollider.offset = birdColliderOffset;
-                    rb.gravityScale = 0f;
-                    rb.linearVelocity = Vector2.zero;
-                    gameObject.layer = LayerMask.NameToLayer("Bird");
-                    break;
-            }
-            OnShapeChanged?.Invoke(newShape);
-            playerAnimationController.OnShapeChanged(CurrentShape);
         }
 
         private void UpdateAnimationParameters()
@@ -415,7 +203,6 @@ namespace Player
             isDead = false;
             transform.position = checkPoints.CurrentCheckPoint.position;
             playerAnimationController.SetTrigger(AnimationController.REVIVE_S);
-            ChangeShape(CurrentShape);
 
             OnRevive?.Invoke();
         }
