@@ -42,6 +42,7 @@ namespace Player
         public Vector2 Velocity => rb.linearVelocity;
 
         private Vector2 effectorVelocity = Vector2.zero;
+        private bool isSwimming;
 
         public event Action OnRevive;
 
@@ -107,6 +108,8 @@ namespace Player
 
         private void HandleJump()
         {
+            if (isSwimming) return;
+
             if (inputHandler.JumpPressed && (IsGrounded || !isDoubleJumping))
             {
                playerAnimationController.SetTrigger("Jump");
@@ -114,6 +117,20 @@ namespace Player
                rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
                isDoubleJumping = !isDoubleJumping;
             }
+        }
+
+        private void EnterWater()
+        {
+            isSwimming = true;
+            rb.gravityScale = 0;
+            rb.linearDamping = 5f; // Добавляем сопротивление для более плавного движения в воде
+        }
+
+        private void ExitWater()
+        {
+            isSwimming = false;
+            rb.gravityScale = 1;
+            rb.linearDamping = 0;
         }
 
         public void Jump()
@@ -135,8 +152,6 @@ namespace Player
                 Vector2 direction = (isFlip ? new Vector2(-0.1f,0) : new Vector2(0.1f,0));
                 origin += direction;
 
-                // Выполняем CircleCast
-                // Получаем все коллайдеры в радиусе
                 Collider2D[] hitColliders = Physics2D.OverlapCircleAll(origin, radius);
 
                 if (hitColliders.Length == 0)
@@ -255,11 +270,23 @@ namespace Player
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") ||
-                other.gameObject.layer == LayerMask.NameToLayer("Bullet"))
+            if (other.gameObject.layer == LayerMask.NameToLayer("Water"))
+            {
+                EnterWater();
+            }
+            else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") ||
+                     other.gameObject.layer == LayerMask.NameToLayer("Bullet"))
             {
                 if (!isDead)
                     Hit();
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Water"))
+            {
+                ExitWater();
             }
         }
     }
