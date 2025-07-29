@@ -128,37 +128,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GraveRobber_jump_0
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 0
-        width: 18
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b4420caee93ec1340800000000000000
-      internalID: 4835990371571868747
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: GraveRobber_jump_1
       rect:
         serializedVersion: 2
-        x: 53
+        x: 54
         y: 0
-        width: 20
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -175,12 +153,12 @@ TextureImporter:
       name: GraveRobber_jump_2
       rect:
         serializedVersion: 2
-        x: 99
+        x: 100
         y: 0
-        width: 22
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 20
+        height: 34
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -197,12 +175,12 @@ TextureImporter:
       name: GraveRobber_jump_3
       rect:
         serializedVersion: 2
-        x: 147
-        y: 4
-        width: 21
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 148
+        y: 5
+        width: 19
+        height: 34
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -219,12 +197,12 @@ TextureImporter:
       name: GraveRobber_jump_4
       rect:
         serializedVersion: 2
-        x: 194
-        y: 2
-        width: 21
-        height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 195
+        y: 3
+        width: 19
+        height: 39
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -237,33 +215,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: GraveRobber_jump_5
-      rect:
-        serializedVersion: 2
-        x: 242
-        y: 0
-        width: 22
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f3b0f09550485b310800000000000000
-      internalID: 1420186416009120575
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 8f438e6f8326993418c4199587180028
     internalID: 0
     vertices: []
     indices: 
@@ -271,7 +227,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       GraveRobber_jump_0: 4835990371571868747
       GraveRobber_jump_1: 8000754575573732751

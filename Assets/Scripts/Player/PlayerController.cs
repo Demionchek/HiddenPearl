@@ -35,7 +35,10 @@ namespace Player
         private PlayerAnimationController playerAnimationController;
         public bool isDead {get; private set;}
         private bool isFlip = false;
-
+        private bool isDoubleJumping = false;
+        private bool canJump = false;
+        public float jumpTimer = 0.25f;
+        private float lastJumpTime = 0f;
 
         public bool IsGrounded { get; private set; }
         public float CurrentSpeed { get; private set; }
@@ -62,6 +65,8 @@ namespace Player
             HandleAttack();
             HandleJump();
             UpdateAnimationParameters();
+
+            if (Time.time >= lastJumpTime + jumpTimer) canJump = true;
         }
 
         private void FixedUpdate()
@@ -107,10 +112,18 @@ namespace Player
 
         private void HandleJump()
         {
-            if (inputHandler.JumpPressed && IsGrounded)
+            if (inputHandler.JumpPressed && (IsGrounded || !isDoubleJumping) && canJump)
             {
-                rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+               playerAnimationController.SetTrigger("Jump");
+               rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+               isDoubleJumping = !isDoubleJumping;
+               lastJumpTime = Time.time;
+               canJump = false;
             }
+        }
+
+        public void Jump()
+        {
         }
 
         private void HandleAttack()
