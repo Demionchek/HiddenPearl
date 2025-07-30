@@ -28,6 +28,7 @@ namespace Animations
         }
 
         public void SetTrigger(string trigger) => animator.SetTrigger(trigger);
+        public void SetBool(string boolName, bool value) => animator.SetBool(boolName, value);
 
         private void UpdateSpriteDirection()
         {

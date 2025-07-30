@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Animations;
 using DefaultNamespace;
 using Interfaces;
 using UnityEngine;
-using UnityEngine.XR.WSA;
 using Zenject;
 
 namespace Player
@@ -14,9 +12,15 @@ namespace Player
     public class PlayerController : MonoBehaviour, IHittable
     {
         [Header("Movement Settings")]
-        [SerializeField] private float speed = 2f;
-        [SerializeField] private float jumpForce = 2f;
+        [SerializeField] private float speed = 1.5f;
+        [SerializeField] private float jumpForce = 2.5f;
         [SerializeField] private float interactDelay = 0.5f;
+
+        [Header("Swimming Settings")]
+        [SerializeField] private float swimSpeed = 3f;
+        [SerializeField] private float swimUpForce = 1f;
+        [SerializeField] private float waterSurfaceLevelOffset = 3.5f;
+        [SerializeField] private LayerMask waterLayer;
 
         [Header("Other Settings")]
         [SerializeField] private RandomSoundPlayer randomAttackPlayerSound;
@@ -31,8 +35,9 @@ namespace Player
 
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
-        private BoxCollider2D boxTriggerCollider;
+        private BoxCollider2D  boxTriggerCollider;
         private PlayerAnimationController playerAnimationController;
+        private Collider2D waterCollider;
         public bool isDead {get; private set;}
         private bool isFlip = false;
         private bool isDoubleJumping = false;
@@ -72,7 +77,13 @@ namespace Player
 
             if (playerAnimationController.isAttacking) return;
 
-            HandleGroundMovement();
+            if (isSwimming)
+            {
+                HandleSwimmingMovement();
+            } else
+            {
+                HandleGroundMovement();
+            }
         }
 
         private void HandleGroundMovement()
@@ -106,6 +117,55 @@ namespace Player
             rb.linearVelocity = new Vector2(horizontalVelocity, rb.linearVelocity.y) + effectorVelocity;
         }
 
+        private void HandleSwimmingMovement()
+        {
+            CurrentSpeed = swimSpeed;
+
+            // Проверяем, достигли ли мы поверхности воды
+            bool atWaterSurface = transform.position.y >= GetWaterSurfaceLevel() - waterSurfaceLevelOffset;
+
+            // Ограничиваем движение вверх у поверхности воды
+            float verticalInput = atWaterSurface && inputHandler.MoveInput.y > 0 ? 0 : inputHandler.MoveInput.y;
+
+            Vector2 swimDirection = new Vector2(inputHandler.MoveInput.x, verticalInput).normalized;
+
+            // Добавляем силу движения
+            rb.AddForce(swimDirection * swimSpeed, ForceMode2D.Force);
+
+            // Ограничиваем максимальную скорость
+            rb.linearVelocity = new Vector2(
+                Mathf.Clamp(rb.linearVelocity.x, -swimSpeed, swimSpeed),
+                Mathf.Clamp(rb.linearVelocity.y, -swimSpeed, swimSpeed)
+            );
+
+            // Если мы у поверхности и стоим на земле, проверяем возможность выхода
+            if (atWaterSurface && IsGrounded)
+            {
+                CheckWaterExit();
+            }
+        }
+
+        private float GetWaterSurfaceLevel()
+        {
+            return waterCollider.bounds.max.y;
+        }
+
+        private void CheckWaterExit()
+        {
+            // Проверяем, есть ли земля над нами, чтобы выйти из воды
+            RaycastHit2D hit = Physics2D.Raycast(
+                transform.position,
+                Vector2.up,
+                capsuleCollider.size.y * 0.6f,
+                LayerMask.GetMask("Ground", "Platform"));
+
+            if (hit.collider == null)
+            {
+                ExitWater();
+            }
+        }
+
+
         private void HandleJump()
         {
             if (isSwimming) return;
@@ -121,9 +181,20 @@ namespace Player
 
         private void EnterWater()
         {
+            rb.gravityScale = 0.5f;
+            StartCoroutine(WaitForDive());
+        }
+
+        private IEnumerator WaitForDive()
+        {
+            while (transform.position.y >= (GetWaterSurfaceLevel() - waterSurfaceLevelOffset) / 2)
+            {
+                yield return new WaitForEndOfFrame();
+            }
             isSwimming = true;
+            rb.linearDamping = 5f;
+            playerAnimationController.SetBool("isSwimming", true);
             rb.gravityScale = 0;
-            rb.linearDamping = 5f; // Добавляем сопротивление для более плавного движения в воде
         }
 
         private void ExitWater()
@@ -131,6 +202,7 @@ namespace Player
             isSwimming = false;
             rb.gravityScale = 1;
             rb.linearDamping = 0;
+            playerAnimationController.SetBool("isSwimming", false);
         }
 
         public void Jump()
@@ -272,6 +344,7 @@ namespace Player
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Water"))
             {
+                waterCollider = other;
                 EnterWater();
             }
             else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") ||
