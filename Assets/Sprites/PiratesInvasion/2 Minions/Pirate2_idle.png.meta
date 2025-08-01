@@ -46,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -125,12 +125,12 @@ TextureImporter:
       name: Pirate2_idle_0
       rect:
         serializedVersion: 2
-        x: 5
+        x: 6
         y: 0
-        width: 22
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 20
+        height: 35
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -147,12 +147,12 @@ TextureImporter:
       name: Pirate2_idle_1
       rect:
         serializedVersion: 2
-        x: 53
+        x: 54
         y: 0
-        width: 22
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 20
+        height: 35
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -169,12 +169,12 @@ TextureImporter:
       name: Pirate2_idle_2
       rect:
         serializedVersion: 2
-        x: 102
+        x: 103
         y: 0
-        width: 22
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 20
+        height: 35
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -191,12 +191,12 @@ TextureImporter:
       name: Pirate2_idle_3
       rect:
         serializedVersion: 2
-        x: 149
+        x: 150
         y: 0
-        width: 23
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 21
+        height: 35
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -213,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 30c00c390901260438d550a25f9f0c41
     internalID: 0
     vertices: []
     indices: 
@@ -221,7 +221,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Pirate2_idle_0: 3039293620646958775
       Pirate2_idle_1: 4382480313774492008

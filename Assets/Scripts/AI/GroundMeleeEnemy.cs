@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using AI.States;
 using Interfaces;
 using UnityEngine;
@@ -7,6 +9,7 @@ namespace AI
     public class GroundMeleeEnemy : BaseEnemy , IHittable
     {
         public float attackDistance = 0.3f;
+        [SerializeField] public int attackDelayMillisec = 500;
 
         private void Start()
         {
@@ -44,6 +47,8 @@ namespace AI
 
         private void FixedUpdate()
         {
+            if (AnimationController.isAttacking || isDead) return;
+
             currState?.StateFixedUpdate();
         }
 
@@ -81,7 +86,17 @@ namespace AI
                 }
             }
 
-            PlaySound(attackSound);
+            if (attackSound != null)
+                PlaySound(attackSound);
+        }
+
+        public async void AttackDelay()
+        {
+            AnimationController.SetAnimatorSpeed(0);
+
+            await Task.Delay(attackDelayMillisec);
+            AnimationController.SetAnimatorSpeed(1);
+            OnAttack();
         }
 
         private void PlaySound(AudioClip clip)

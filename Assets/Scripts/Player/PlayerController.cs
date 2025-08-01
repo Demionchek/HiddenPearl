@@ -23,6 +23,7 @@ namespace Player
         [SerializeField] private LayerMask waterLayer;
 
         [Header("Other Settings")]
+        [SerializeField] private int MaxHealth = 3;
         [SerializeField] private RandomSoundPlayer randomAttackPlayerSound;
         [SerializeField] private RandomSoundPlayer randomHitPlayerSound;
 
@@ -44,6 +45,7 @@ namespace Player
 
         public bool IsGrounded { get; private set; }
         public float CurrentSpeed { get; private set; }
+        public int Health { get; private set; }
         public Vector2 Velocity => rb.linearVelocity;
 
         private Vector2 effectorVelocity = Vector2.zero;
@@ -57,6 +59,7 @@ namespace Player
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             boxTriggerCollider = GetComponent<BoxCollider2D>();
             playerAnimationController = GetComponent<PlayerAnimationController>();
+            Health = MaxHealth;
         }
 
         private void Update()
@@ -165,7 +168,6 @@ namespace Player
             }
         }
 
-
         private void HandleJump()
         {
             if (isSwimming) return;
@@ -203,10 +205,6 @@ namespace Player
             rb.gravityScale = 1;
             rb.linearDamping = 0;
             playerAnimationController.SetBool("isSwimming", false);
-        }
-
-        public void Jump()
-        {
         }
 
         private void HandleAttack()
@@ -283,11 +281,16 @@ namespace Player
         {
             if (isDead || dialogueSystem.isDialogRunning) return;
 
-            playerAnimationController.SetTrigger(AnimationController.IS_DEAD_S);
-            isDead = true;
-            rb.gravityScale = 1;
+            Health--;
 
-            StartCoroutine(ReviveCoroutine());
+            if (Health <= 0)
+            {
+                playerAnimationController.SetTrigger(AnimationController.IS_DEAD_S);
+                isDead = true;
+                rb.gravityScale = 1;
+
+                StartCoroutine(ReviveCoroutine());
+            }
         }
 
         private IEnumerator ReviveCoroutine()
@@ -303,8 +306,7 @@ namespace Player
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if (other.collider.gameObject.layer == LayerMask.NameToLayer("Enemy") ||
-                other.collider.gameObject.layer == LayerMask.NameToLayer("Bullet"))
+            if (other.collider.gameObject.layer == LayerMask.NameToLayer("Bullet"))
             {
                 if (!isDead)
                     Hit();
@@ -347,8 +349,8 @@ namespace Player
                 waterCollider = other;
                 EnterWater();
             }
-            else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") ||
-                     other.gameObject.layer == LayerMask.NameToLayer("Bullet"))
+
+            if (other.gameObject.layer == LayerMask.NameToLayer("Bullet"))
             {
                 if (!isDead)
                     Hit();

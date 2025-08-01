@@ -21,6 +21,8 @@ namespace Animations
         public void SetAnimatorFloat(string trigger, float value) => animator.SetFloat(trigger, value);
         public SpriteRenderer GetSpriteRenderer() => spriteRenderer;
 
+        public void SetAnimatorSpeed(float speed) => animator.speed = speed;
+
         public void OnEnableFire()
         {
             baseEnemy.ActivateSpecial(true);

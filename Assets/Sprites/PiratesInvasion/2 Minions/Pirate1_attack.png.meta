@@ -52,7 +52,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -131,12 +131,12 @@ TextureImporter:
       name: Pirate1_attack_0
       rect:
         serializedVersion: 2
-        x: 4
+        x: 5
         y: 0
-        width: 30
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 28
+        height: 34
+      alignment: 9
+      pivot: {x: 0.35, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -153,12 +153,12 @@ TextureImporter:
       name: Pirate1_attack_1
       rect:
         serializedVersion: 2
-        x: 52
+        x: 53
         y: 0
-        width: 26
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 24
+        height: 34
+      alignment: 9
+      pivot: {x: 0.37, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -175,12 +175,12 @@ TextureImporter:
       name: Pirate1_attack_2
       rect:
         serializedVersion: 2
-        x: 101
+        x: 102
         y: 0
-        width: 18
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 16
+        height: 35
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -197,12 +197,12 @@ TextureImporter:
       name: Pirate1_attack_3
       rect:
         serializedVersion: 2
-        x: 149
+        x: 150
         y: 0
-        width: 29
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 34
+      alignment: 9
+      pivot: {x: 0.35, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -219,12 +219,12 @@ TextureImporter:
       name: Pirate1_attack_4
       rect:
         serializedVersion: 2
-        x: 196
+        x: 197
         y: 0
-        width: 35
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 33
+        height: 34
+      alignment: 9
+      pivot: {x: 0.35, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -241,12 +241,12 @@ TextureImporter:
       name: Pirate1_attack_5
       rect:
         serializedVersion: 2
-        x: 244
+        x: 245
         y: 0
-        width: 32
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 30
+        height: 34
+      alignment: 9
+      pivot: {x: 0.35, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -263,7 +263,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5ddd54be0b6ee7046a6ee6a9070238a3
     internalID: 0
     vertices: []
     indices: 
@@ -271,7 +271,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Pirate1_attack_0: 2372483235215892608
       Pirate1_attack_1: -5163382056208999454
