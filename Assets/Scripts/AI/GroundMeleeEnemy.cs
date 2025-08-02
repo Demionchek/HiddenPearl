@@ -83,6 +83,7 @@ namespace AI
                 if (hittable != null)
                 {
                     hittable.Hit();
+                    break;
                 }
             }
 

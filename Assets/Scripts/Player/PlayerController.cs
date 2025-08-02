@@ -9,7 +9,7 @@ using Zenject;
 namespace Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerController : MonoBehaviour, IHittable
+    public class PlayerController : MonoBehaviour, IHittable, IHealth
     {
         [Header("Movement Settings")]
         [SerializeField] private float speed = 1.5f;
@@ -23,7 +23,8 @@ namespace Player
         [SerializeField] private LayerMask waterLayer;
 
         [Header("Other Settings")]
-        [SerializeField] private int MaxHealth = 3;
+        [SerializeField] private int Health;
+        [SerializeField] private int MaxHealth;
         [SerializeField] private RandomSoundPlayer randomAttackPlayerSound;
         [SerializeField] private RandomSoundPlayer randomHitPlayerSound;
 
@@ -42,10 +43,24 @@ namespace Player
         public bool isDead {get; private set;}
         private bool isFlip = false;
         private bool isDoubleJumping = false;
+        public Action<int> healthChanged { get; set; }
+
+        public int GetHealth()
+        {
+            return Health;
+        }
+        public int GetMaxHealth()
+        {
+            return MaxHealth;
+        }
+        public void SetHealth(int health)
+        {
+            Health = health;
+            healthChanged?.Invoke(Health);
+        }
 
         public bool IsGrounded { get; private set; }
         public float CurrentSpeed { get; private set; }
-        public int Health { get; private set; }
         public Vector2 Velocity => rb.linearVelocity;
 
         private Vector2 effectorVelocity = Vector2.zero;
@@ -59,7 +74,7 @@ namespace Player
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             boxTriggerCollider = GetComponent<BoxCollider2D>();
             playerAnimationController = GetComponent<PlayerAnimationController>();
-            Health = MaxHealth;
+            SetHealth(MaxHealth);
         }
 
         private void Update()
@@ -281,7 +296,7 @@ namespace Player
         {
             if (isDead || dialogueSystem.isDialogRunning) return;
 
-            Health--;
+            SetHealth(Health - 1);
 
             if (Health <= 0)
             {
@@ -364,5 +379,7 @@ namespace Player
                 ExitWater();
             }
         }
+
+
     }
 }
