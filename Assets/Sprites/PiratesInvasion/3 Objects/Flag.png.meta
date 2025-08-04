@@ -52,7 +52,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -131,11 +131,11 @@ TextureImporter:
       name: Flag_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 30
+        width: 28
         height: 56
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -153,11 +153,11 @@ TextureImporter:
       name: Flag_1
       rect:
         serializedVersion: 2
-        x: 32
+        x: 33
         y: 0
-        width: 30
+        width: 28
         height: 56
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -175,11 +175,11 @@ TextureImporter:
       name: Flag_2
       rect:
         serializedVersion: 2
-        x: 64
+        x: 65
         y: 0
-        width: 30
+        width: 28
         height: 56
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -197,11 +197,11 @@ TextureImporter:
       name: Flag_3
       rect:
         serializedVersion: 2
-        x: 96
+        x: 97
         y: 0
-        width: 30
+        width: 28
         height: 56
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -219,11 +219,11 @@ TextureImporter:
       name: Flag_4
       rect:
         serializedVersion: 2
-        x: 128
+        x: 129
         y: 0
-        width: 30
+        width: 28
         height: 56
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -241,11 +241,11 @@ TextureImporter:
       name: Flag_5
       rect:
         serializedVersion: 2
-        x: 160
+        x: 161
         y: 0
-        width: 30
+        width: 28
         height: 56
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -263,7 +263,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: a205f83a41e7fe349849355e1c944543
     internalID: 0
     vertices: []
     indices: 
@@ -271,7 +271,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":6,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Flag_0: 1805158079502305607
       Flag_1: -477789389410734736

@@ -1,15 +1,20 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using AI.States;
+using DefaultNamespace;
 using Interfaces;
 using UnityEngine;
 
 namespace AI
 {
-    public class GroundMeleeEnemy : BaseEnemy , IHittable
+    public class GroundMeleeEnemy : BaseEnemy , IHittable , IHealth
     {
+        [Header("GroundEnemySettings")]
+        public int Health;
+        public int MaxHealth;
         public float attackDistance = 0.3f;
-        [SerializeField] public int attackDelayMillisec = 500;
+        [SerializeField] public float attackDelaySec = 0.3f;
 
         private void Start()
         {
@@ -91,11 +96,16 @@ namespace AI
                 PlaySound(attackSound);
         }
 
-        public async void AttackDelay()
+        public void AttackDelay()
         {
             AnimationController.SetAnimatorSpeed(0);
 
-            await Task.Delay(attackDelayMillisec);
+            StartCoroutine(AttackDelayCoroutine());
+        }
+
+        private IEnumerator AttackDelayCoroutine()
+        {
+            yield return new WaitForSeconds(attackDelaySec);
             AnimationController.SetAnimatorSpeed(1);
             OnAttack();
         }
@@ -128,8 +138,34 @@ namespace AI
 
         public void Hit()
         {
-            isDead = true;
-            ChangeState<DeathState>();
+            if (isDead) return;
+
+            SetHealth(Health - 1);
+
+            healthChanged?.Invoke(Health);
+
+            SetPlayerAsTarget();
+
+            if (Health <=  0)
+            {
+                isDead = true;
+                ChangeState<DeathState>();
+            }
+        }
+
+        public Action<int> healthChanged { get; set; }
+        public int GetHealth()
+        {
+            return Health;
+        }
+        public int GetMaxHealth()
+        {
+            return MaxHealth;
+        }
+        public void SetHealth(int health)
+        {
+            Health = health;
+            healthChanged?.Invoke(health);
         }
     }
 }

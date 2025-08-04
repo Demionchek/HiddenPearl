@@ -40,6 +40,9 @@ namespace Player
         private BoxCollider2D  boxTriggerCollider;
         private PlayerAnimationController playerAnimationController;
         private Collider2D waterCollider;
+
+        private int currentAttackIndex = -1;
+
         public bool isDead {get; private set;}
         private bool isFlip = false;
         private bool isDoubleJumping = false;
@@ -80,12 +83,13 @@ namespace Player
         private void Update()
         {
             isFlip = playerAnimationController.IsSpriteFliped();
+            UpdateAnimationParameters();
+
             if (playerAnimationController.isAttacking ||
                 isDead || dialogueSystem.isDialogRunning) return;
 
             HandleAttack();
             HandleJump();
-            UpdateAnimationParameters();
         }
 
         private void FixedUpdate()
@@ -93,7 +97,7 @@ namespace Player
             if (isDead || dialogueSystem.isDialogRunning)
                 return;
 
-            if (playerAnimationController.isAttacking) return;
+            //if (playerAnimationController.isAttacking) return;
 
             if (isSwimming)
             {
@@ -226,40 +230,53 @@ namespace Player
         {
             if (inputHandler.AttackPressed)
             {
-                playerAnimationController.SetTrigger("Attack");
+                if (rb.linearVelocity.magnitude > 0.1f)
+                {
+                    playerAnimationController.SetInt(AnimationController.ATTACK_S, 3);
+                } else
+                {
+                    int attackIndex = currentAttackIndex == 1 ? 2 : 1;
+                    playerAnimationController.SetInt(AnimationController.ATTACK_S, attackIndex);
+                    currentAttackIndex = attackIndex;
+                }
                 playerAnimationController.isAttacking = true;
 
                 StartCoroutine(PlayAttackSoundWithDelay());
+            }
+        }
 
-                Vector2 origin = transform.position + new Vector3(0, 0.15f, 0);
-                float radius = 0.2f;
-                float distance = 0.02f;
-                Vector2 direction = (isFlip ? new Vector2(-0.1f,0) : new Vector2(0.1f,0));
-                origin += direction;
+        private void CastAttack()
+        {
+            Vector2 origin = transform.position + new Vector3(0, 0.15f, 0);
+            float radius = 0.2f;
+            float distance = 0.02f;
+            Vector2 direction = (isFlip ? new Vector2(-0.1f,0) : new Vector2(0.1f,0));
+            origin += direction;
 
-                Collider2D[] hitColliders = Physics2D.OverlapCircleAll(origin, radius);
+            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(origin, radius);
 
-                if (hitColliders.Length == 0)
+            if (hitColliders.Length == 0)
+            {
+                Debug.Log("В радиусе нет объектов.");
+                return;
+            }
+
+
+            foreach (Collider2D collider in hitColliders)
+            {
+                if (collider.gameObject.layer == LayerMask.NameToLayer("Player")) continue;
+                Debug.Log($"Обнаружен объект: {collider.name}");
+
+                IInteractable interactable = collider.GetComponent<IInteractable>();
+                if (interactable != null)
                 {
-                    Debug.Log("В радиусе нет объектов.");
-                    return;
+                    interactable.Interact();
                 }
 
-                foreach (Collider2D collider in hitColliders)
+                IHittable hit = collider.GetComponent<IHittable>();
+                if (hit != null)
                 {
-                    Debug.Log($"Обнаружен объект: {collider.name}");
-
-                    IInteractable interactable = collider.GetComponent<IInteractable>();
-                    if (interactable != null)
-                    {
-                        interactable.Interact();
-                    }
-
-                    IHittable hit = collider.GetComponent<IHittable>();
-                    if (hit != null)
-                    {
-                        hit.Hit();
-                    }
+                    hit.Hit();
                 }
             }
         }
@@ -315,6 +332,8 @@ namespace Player
             isDead = false;
             transform.position = checkPoints.CurrentCheckPoint.position;
             playerAnimationController.SetTrigger(AnimationController.REVIVE_S);
+            SetHealth(MaxHealth);
+            healthChanged?.Invoke(Health);
 
             OnRevive?.Invoke();
         }

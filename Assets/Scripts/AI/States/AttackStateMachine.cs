@@ -11,6 +11,7 @@ namespace AI.States
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             animationController = animator.GetComponent<AnimationController>();
+            animator.SetInteger(AnimationController.ATTACK_S, 0);
         }
 
         // OnStateExit is called when a transition ends and the state machine finishes evaluating this state

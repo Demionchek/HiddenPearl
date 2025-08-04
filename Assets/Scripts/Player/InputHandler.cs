@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
-
     public class InputHandler : MonoBehaviour
     {
         public Vector2 MoveInput { get; private set; }
@@ -37,12 +36,20 @@ namespace Player
 
         private void OnJump(InputValue context)
         {
-            if (context.isPressed) JumpPressed = true;
+            if (context.isPressed)
+            {
+                JumpPressed = true;
+                Debug.Log("Jump input received");
+            }
         }
 
-        private void OnФеефсл(InputValue context)
+        private void OnAttack(InputValue context)
         {
-            if (context.isPressed) AttackPressed = true;
+            if (context.isPressed)
+            {
+                AttackPressed = true;
+                Debug.Log("Attack input received");
+            }
         }
     }
 }

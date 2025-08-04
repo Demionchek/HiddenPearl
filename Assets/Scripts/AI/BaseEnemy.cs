@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using AI.States;
 using Animations;
 using Player;
 using UnityEngine;
+using Zenject;
 
 namespace AI
 {
@@ -67,6 +69,9 @@ namespace AI
         private static float SIGHT_OFFSET = 0.1f;
         private static float TARGET_OFFSET = 0.1f;
 
+        [Inject]
+        PlayerController playerController;
+
         protected virtual void Init()
         {
             AnimationController = GetComponent<EnemyAnimationController>();
@@ -100,6 +105,13 @@ namespace AI
             {
                 canAttack = true;
             }
+        }
+
+        public void SetPlayerAsTarget()
+        {
+            this.target = playerController.transform;
+            canSeeTarget = true;
+            ChangeState<ChaseStateAI>();
         }
 
         private void DetectTarget()
