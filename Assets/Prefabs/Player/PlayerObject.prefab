@@ -405,9 +405,11 @@ MonoBehaviour:
   interactDelay: 0.5
   swimSpeed: 3
   swimUpForce: 1
-  waterSurfaceLevelOffset: 3.5
+  waterSurfaceLevelOffset: 0.35
   waterLayer:
     serializedVersion: 2
     m_Bits: 16
+  Health: 0
+  MaxHealth: 3
   randomAttackPlayerSound: {fileID: 4433539580046406722}
   randomHitPlayerSound: {fileID: 4433539580046406722}

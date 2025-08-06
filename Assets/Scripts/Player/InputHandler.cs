@@ -8,10 +8,12 @@ namespace Player
         public Vector2 MoveInput { get; private set; }
         public bool JumpPressed { get; private set; }
         public bool AttackPressed { get; private set; }
+        public bool DodgeAction { get; private set; }
 
         private InputAction moveAction;
         private InputAction jumpAction;
         private InputAction attackAction;
+        private InputAction dodgeAction;
 
         private void Awake()
         {
@@ -20,6 +22,7 @@ namespace Player
             moveAction = playerInput.actions["Move"];
             jumpAction = playerInput.actions["Jump"];
             attackAction = playerInput.actions["Attack"];
+            dodgeAction = playerInput.actions["Dodge"];
         }
 
         private void Update()
@@ -32,6 +35,7 @@ namespace Player
             // Автоматический сброс триггеров в конце кадра
             JumpPressed = false;
             AttackPressed = false;
+            DodgeAction = false;
         }
 
         private void OnJump(InputValue context)
@@ -39,7 +43,6 @@ namespace Player
             if (context.isPressed)
             {
                 JumpPressed = true;
-                Debug.Log("Jump input received");
             }
         }
 
@@ -48,7 +51,14 @@ namespace Player
             if (context.isPressed)
             {
                 AttackPressed = true;
-                Debug.Log("Attack input received");
+            }
+        }
+
+        private void OnDodge(InputValue context)
+        {
+            if (context.isPressed)
+            {
+                DodgeAction = true;
             }
         }
     }

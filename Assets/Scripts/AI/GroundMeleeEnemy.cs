@@ -52,7 +52,7 @@ namespace AI
 
         private void FixedUpdate()
         {
-            if (AnimationController.isAttacking || isDead) return;
+            if (AnimationController.isAttacking) return;
 
             currState?.StateFixedUpdate();
         }
@@ -107,6 +107,9 @@ namespace AI
         {
             yield return new WaitForSeconds(attackDelaySec);
             AnimationController.SetAnimatorSpeed(1);
+            
+            if (isDead) yield break;
+            
             OnAttack();
         }
 

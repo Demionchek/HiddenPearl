@@ -14,6 +14,7 @@ namespace Player
         [Header("Movement Settings")]
         [SerializeField] private float speed = 1.5f;
         [SerializeField] private float jumpForce = 2.5f;
+        [SerializeField] private float rollForce = 1.5f;
         [SerializeField] private float interactDelay = 0.5f;
 
         [Header("Swimming Settings")]
@@ -38,7 +39,7 @@ namespace Player
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
         private BoxCollider2D  boxTriggerCollider;
-        private PlayerAnimationController playerAnimationController;
+        private PlayerAnimationController animController;
         private Collider2D waterCollider;
 
         private int currentAttackIndex = -1;
@@ -46,6 +47,7 @@ namespace Player
         public bool isDead {get; private set;}
         private bool isFlip = false;
         private bool isDoubleJumping = false;
+        private bool isRolling = false;
         public Action<int> healthChanged { get; set; }
 
         public int GetHealth()
@@ -76,28 +78,27 @@ namespace Player
             rb = GetComponent<Rigidbody2D>();
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             boxTriggerCollider = GetComponent<BoxCollider2D>();
-            playerAnimationController = GetComponent<PlayerAnimationController>();
+            animController = GetComponent<PlayerAnimationController>();
             SetHealth(MaxHealth);
         }
 
         private void Update()
         {
-            isFlip = playerAnimationController.IsSpriteFliped();
+            isFlip = animController.IsSpriteFliped();
             UpdateAnimationParameters();
 
-            if (playerAnimationController.isAttacking ||
-                isDead || dialogueSystem.isDialogRunning) return;
+            if (animController.isAttacking ||
+                isDead || dialogueSystem.isDialogRunning || animController.isRolling) return;
 
             HandleAttack();
             HandleJump();
+            HandleRoll();
         }
 
         private void FixedUpdate()
         {
-            if (isDead || dialogueSystem.isDialogRunning)
+            if (isDead || dialogueSystem.isDialogRunning || animController.isRolling)
                 return;
-
-            //if (playerAnimationController.isAttacking) return;
 
             if (isSwimming)
             {
@@ -117,7 +118,7 @@ namespace Player
             if (Mathf.Abs(inputHandler.MoveInput.x) > 0.1f)
             {
                 float direction = Mathf.Sign(inputHandler.MoveInput.x);
-                float rayLength = capsuleCollider.size.x * 0.6f;
+                float rayLength = capsuleCollider.size.x * 0.75f;
                 Vector2 rayOrigin = (Vector2)transform.position + capsuleCollider.offset;
 
                 float rayHeight = capsuleCollider.size.y * 0.4f;
@@ -126,7 +127,7 @@ namespace Player
                     rayOrigin + Vector2.up * (capsuleCollider.offset.y - rayHeight * 1.75f),
                     Vector2.right * direction,
                     rayLength,
-                    LayerMask.GetMask("Ground", "Wall", "Platform"));
+                    LayerMask.GetMask("Ground", "Wall", "Platform", "Enemy"));
 
                 isWallInFront = hitLower.collider != null;
 
@@ -193,7 +194,7 @@ namespace Player
 
             if (inputHandler.JumpPressed && (IsGrounded || !isDoubleJumping))
             {
-               playerAnimationController.SetTrigger("Jump");
+               animController.SetTrigger("Jump");
                rb.linearVelocity = Vector2.zero;
                rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
                isDoubleJumping = !isDoubleJumping;
@@ -214,7 +215,7 @@ namespace Player
             }
             isSwimming = true;
             rb.linearDamping = 5f;
-            playerAnimationController.SetBool("isSwimming", true);
+            animController.SetBool("isSwimming", true);
             rb.gravityScale = 0;
         }
 
@@ -223,7 +224,7 @@ namespace Player
             isSwimming = false;
             rb.gravityScale = 1;
             rb.linearDamping = 0;
-            playerAnimationController.SetBool("isSwimming", false);
+            animController.SetBool("isSwimming", false);
         }
 
         private void HandleAttack()
@@ -232,17 +233,42 @@ namespace Player
             {
                 if (rb.linearVelocity.magnitude > 0.1f)
                 {
-                    playerAnimationController.SetInt(AnimationController.ATTACK_S, 3);
+                    animController.SetInt(AnimationController.ATTACK_S, 3);
                 } else
                 {
                     int attackIndex = currentAttackIndex == 1 ? 2 : 1;
-                    playerAnimationController.SetInt(AnimationController.ATTACK_S, attackIndex);
+                    animController.SetInt(AnimationController.ATTACK_S, attackIndex);
                     currentAttackIndex = attackIndex;
                 }
-                playerAnimationController.isAttacking = true;
+                animController.isAttacking = true;
 
                 StartCoroutine(PlayAttackSoundWithDelay());
             }
+        }
+
+        private void HandleRoll()
+        {
+            if (inputHandler.DodgeAction && !animController.isRolling && IsGrounded && !isSwimming)
+            {
+                animController.isRolling = true;
+
+                StartCoroutine(RollCoroutine());
+
+            }
+        }
+
+        private IEnumerator RollCoroutine()
+        {
+            animController.SetTrigger(AnimationController.ROLL_S);
+            Vector2 direction = animController.IsSpriteFliped() ? -Vector2.right : Vector2.right;
+            rb.linearVelocity = Vector2.zero;
+            rb.AddForce(direction * rollForce, ForceMode2D.Impulse);
+            gameObject.layer = LayerMask.NameToLayer("Roll");
+            
+            while (animController.isRolling)
+                yield return new WaitForEndOfFrame();
+
+            gameObject.layer = LayerMask.NameToLayer("Player");
         }
 
         private void CastAttack()
@@ -303,7 +329,7 @@ namespace Player
 
         private void UpdateAnimationParameters()
         {
-            playerAnimationController.SetMovementParameters(
+            animController.SetMovementParameters(
                 Mathf.Abs(inputHandler.MoveInput.x),
                 IsGrounded
             );
@@ -311,13 +337,13 @@ namespace Player
 
         public void Hit()
         {
-            if (isDead || dialogueSystem.isDialogRunning) return;
+            if (isDead || dialogueSystem.isDialogRunning || animController.isRolling) return;
 
             SetHealth(Health - 1);
 
             if (Health <= 0)
             {
-                playerAnimationController.SetTrigger(AnimationController.IS_DEAD_S);
+                animController.SetTrigger(AnimationController.IS_DEAD_S);
                 isDead = true;
                 rb.gravityScale = 1;
 
@@ -331,7 +357,7 @@ namespace Player
 
             isDead = false;
             transform.position = checkPoints.CurrentCheckPoint.position;
-            playerAnimationController.SetTrigger(AnimationController.REVIVE_S);
+            animController.SetTrigger(AnimationController.REVIVE_S);
             SetHealth(MaxHealth);
             healthChanged?.Invoke(Health);
 
