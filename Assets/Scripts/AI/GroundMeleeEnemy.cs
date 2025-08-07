@@ -11,10 +11,7 @@ namespace AI
     public class GroundMeleeEnemy : BaseEnemy , IHittable , IHealth
     {
         [Header("GroundEnemySettings")]
-        public int Health;
-        public int MaxHealth;
         public float attackDistance = 0.3f;
-        [SerializeField] public float attackDelaySec = 0.3f;
 
         private void Start()
         {
@@ -57,7 +54,7 @@ namespace AI
             currState?.StateFixedUpdate();
         }
 
-        public void OnAttack()
+        protected override void OnAttack()
         {
             bool isFlip = AnimationController.GetSpriteRenderer().flipX;
             Vector2 origin = transform.position + new Vector3(0, 0.15f, 0);
@@ -96,23 +93,6 @@ namespace AI
                 PlaySound(attackSound);
         }
 
-        public void AttackDelay()
-        {
-            AnimationController.SetAnimatorSpeed(0);
-
-            StartCoroutine(AttackDelayCoroutine());
-        }
-
-        private IEnumerator AttackDelayCoroutine()
-        {
-            yield return new WaitForSeconds(attackDelaySec);
-            AnimationController.SetAnimatorSpeed(1);
-            
-            if (isDead) yield break;
-            
-            OnAttack();
-        }
-
         private void PlaySound(AudioClip clip)
         {
             audioSource?.PlayOneShot(clip);
@@ -137,38 +117,6 @@ namespace AI
 
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(origin, radius);
-        }
-
-        public void Hit()
-        {
-            if (isDead) return;
-
-            SetHealth(Health - 1);
-
-            healthChanged?.Invoke(Health);
-
-            SetPlayerAsTarget();
-
-            if (Health <=  0)
-            {
-                isDead = true;
-                ChangeState<DeathState>();
-            }
-        }
-
-        public Action<int> healthChanged { get; set; }
-        public int GetHealth()
-        {
-            return Health;
-        }
-        public int GetMaxHealth()
-        {
-            return MaxHealth;
-        }
-        public void SetHealth(int health)
-        {
-            Health = health;
-            healthChanged?.Invoke(health);
         }
     }
 }

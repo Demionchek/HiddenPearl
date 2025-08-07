@@ -1,13 +1,16 @@
 using Player;
+using Zenject;
+using UnityEngine;
 
 namespace Animations
 {
-    using UnityEngine;
-
     [RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
     public class PlayerAnimationController : AnimationController
     {
         private PlayerController player;
+
+        [Inject]
+        private InputHandler inputHandler;
 
         private void Awake()
         {
@@ -33,11 +36,11 @@ namespace Animations
 
         private void UpdateSpriteDirection()
         {
-            if (player.Velocity.x > 0.1f)
+            if (inputHandler.MoveInput.x > 0.1f)
             {
                 spriteRenderer.flipX = false;
             }
-            else if (player.Velocity.x < -0.1f)
+            else if (inputHandler.MoveInput.x < -0.1f)
             {
                 spriteRenderer.flipX = true;
             }

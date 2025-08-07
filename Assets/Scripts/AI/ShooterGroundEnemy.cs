@@ -45,13 +45,13 @@ namespace AI
             currState?.StateFixedUpdate();
         }
 
-        public void OnFire()
+        protected override void OnAttack()
         {
             if (target == null) return;
 
             GameObject bullet = pool.Get();
             bullet.transform.position = AnimationController.GetSpriteRenderer().flipX ? shootPosLeft.position : shootPosRight.position;
-            Vector2 targetPosition = new Vector2(target.transform.position.x, target.transform.position.y + 0.15f);
+            Vector2 targetPosition = new Vector2(target.transform.position.x, target.transform.position.y + 0.25f);
             // Направление к цели
             Vector2 direction = targetPosition - (Vector2)bullet.transform.position;
             // Вычисляем угол в радианах и конвертируем в градусы
@@ -59,12 +59,6 @@ namespace AI
             // Поворачиваем объект (для 2D обычно используется ось Z)
             bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             audioSource.Play();
-        }
-
-        public void Hit()
-        {
-            isDead = true;
-            ChangeState<DeathState>();
         }
     }
 }

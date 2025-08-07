@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using AI.States;
 using Animations;
+using DefaultNamespace;
+using Interfaces;
 using Player;
 using UnityEngine;
 using Zenject;
@@ -18,7 +21,7 @@ namespace AI
     }
 
     [RequireComponent(typeof(EnemyAnimationController), typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
-    public abstract class BaseEnemy : MonoBehaviour
+    public abstract class BaseEnemy : MonoBehaviour , IHealth , IHittable
     {
         [SerializeField] public float speed;
         [SerializeField] private bool isRange = false;
@@ -32,6 +35,7 @@ namespace AI
         [SerializeField] protected LayerMask targetMask;
         [SerializeField] protected LayerMask obstacleMask;
         [SerializeField] public float attackDelay = 0.3f;
+        [SerializeField] public float attackHoldSec = 0.3f;
         [HideInInspector] public bool canSeeTarget = false;
 
         [Space(5)]
@@ -46,6 +50,10 @@ namespace AI
         [Header("Chasing")]
         [SerializeField] public float stoppingDistance = 1f;
         [HideInInspector] public bool canAttack = false;
+
+        [Header("Health")]
+        public int Health = 3;
+        public int MaxHealth = 3;
 
         protected bool isDead = false;
         protected BaseStateAI currState;
@@ -69,6 +77,8 @@ namespace AI
         private static float SIGHT_OFFSET = 0.1f;
         private static float TARGET_OFFSET = 0.1f;
 
+        public Action<int> healthChanged { get; set; }
+
         [Inject]
         PlayerController playerController;
 
@@ -78,6 +88,36 @@ namespace AI
             rb = GetComponent<Rigidbody2D>();
             capsule = GetComponent<CapsuleCollider2D>();
             createdStates = new List<BaseStateAI>();
+        }
+
+        public int GetHealth()
+        {
+            return Health;
+        }
+        public int GetMaxHealth()
+        {
+            return MaxHealth;
+        }
+        public void SetHealth(int health)
+        {
+            Health = health;
+            healthChanged?.Invoke(health);
+        }
+        public void Hit()
+        {
+            if (isDead) return;
+
+            SetHealth(Health - 1);
+
+            healthChanged?.Invoke(Health);
+
+            SetPlayerAsTarget();
+
+            if (Health <=  0)
+            {
+                isDead = true;
+                ChangeState<DeathState>();
+            }
         }
 
         public virtual void ActivateSpecial( bool isActive) { }
@@ -113,6 +153,25 @@ namespace AI
             canSeeTarget = true;
             ChangeState<ChaseStateAI>();
         }
+
+        public void AttackDelay()
+        {
+            AnimationController.SetAnimatorSpeed(0);
+
+            StartCoroutine(AttackDelayCoroutine());
+        }
+
+        private IEnumerator AttackDelayCoroutine()
+        {
+            yield return new WaitForSeconds(attackHoldSec);
+            AnimationController.SetAnimatorSpeed(1);
+
+            if (isDead) yield break;
+
+            OnAttack();
+        }
+
+        protected virtual void OnAttack(){}
 
         private void DetectTarget()
         {
@@ -198,5 +257,7 @@ namespace AI
             return new T();
         }
         #endregion
+
+
     }
 }

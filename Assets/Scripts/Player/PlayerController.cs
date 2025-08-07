@@ -264,7 +264,7 @@ namespace Player
             rb.linearVelocity = Vector2.zero;
             rb.AddForce(direction * rollForce, ForceMode2D.Impulse);
             gameObject.layer = LayerMask.NameToLayer("Roll");
-            
+
             while (animController.isRolling)
                 yield return new WaitForEndOfFrame();
 
@@ -414,6 +414,8 @@ namespace Player
             {
                 if (!isDead)
                     Hit();
+
+                if (other.TryGetComponent(out Bullet bullet)) Destroy(other.gameObject);
             }
         }
 

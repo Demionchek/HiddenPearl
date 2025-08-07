@@ -10,6 +10,7 @@ namespace AI
         {
             AttackTrigger();
             animatonController.SetAnimatorFloat(AnimationController.SPEED_S, 0);
+            baseEnemy.rb.linearVelocity = Vector2.zero;
         }
         public override void ExitState() { }
 
@@ -20,7 +21,7 @@ namespace AI
                 Vector2 direction = baseEnemy.target.position - baseEnemy.transform.position;
                 float distance = direction.magnitude;
 
-                if (distance > baseEnemy.stoppingDistance)
+                if (distance > baseEnemy.stoppingDistance && !animatonController.isAttacking)
                 {
                     direction.Normalize();
                     baseEnemy.rb.linearVelocity = direction * baseEnemy.speed;
