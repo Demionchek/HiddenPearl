@@ -19,6 +19,5 @@ namespace AI.States
         {
             animationController.isAttacking = false;
         }
-
     }
 }

@@ -66,6 +66,7 @@ namespace Player
 
         public bool IsGrounded { get; private set; }
         public float CurrentSpeed { get; private set; }
+        public bool isDiving { get; private set; }
         public Vector2 Velocity => rb.linearVelocity;
 
         private Vector2 effectorVelocity = Vector2.zero;
@@ -146,6 +147,8 @@ namespace Player
 
             // Проверяем, достигли ли мы поверхности воды
             bool atWaterSurface = transform.position.y >= GetWaterSurfaceLevel() - waterSurfaceLevelOffset;
+
+            isDiving = !atWaterSurface;
 
             // Ограничиваем движение вверх у поверхности воды
             float verticalInput = atWaterSurface && inputHandler.MoveInput.y > 0 ? 0 : inputHandler.MoveInput.y;
@@ -426,7 +429,5 @@ namespace Player
                 ExitWater();
             }
         }
-
-
     }
 }

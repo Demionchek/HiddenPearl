@@ -20,7 +20,10 @@ namespace DefaultNamespace
         [SerializeField] private bool ignoreWalls = false;
         [SerializeField] private bool ignoreOutOfRange = false;
         [SerializeField] private bool respawnAfterEliminated = false;
-        [SerializeField] private bool ignorePlayerShape = false;
+
+        [Header("Patroll")] 
+        [SerializeField] private Transform[] patrollPoints;
+        [SerializeField] private float patrollDelay;
 
         [Header("Debug")]
         [SerializeField] private bool drawGizmos = true;
