@@ -34,7 +34,7 @@ namespace AI
         [SerializeField] private float checkFrequency = 0.2f;
         [SerializeField] protected LayerMask targetMask;
         [SerializeField] protected LayerMask obstacleMask;
-        [SerializeField] public float attackDelay = 0.3f;
+        [SerializeField] public float attackDelay = 2f;
         [SerializeField] public float attackHoldSec = 0.3f;
         [HideInInspector] public bool canSeeTarget = false;
 

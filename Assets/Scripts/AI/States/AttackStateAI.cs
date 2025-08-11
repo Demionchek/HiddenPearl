@@ -8,7 +8,6 @@ namespace AI
     {
         public override void EnterState()
         {
-            AttackTrigger();
             animatonController.SetAnimatorFloat(AnimationController.SPEED_S, 0);
             baseEnemy.rb.linearVelocity = Vector2.zero;
         }
@@ -30,8 +29,11 @@ namespace AI
                     return;
                 }
             }
+            
+            bool canAttack = !animatonController.isAttacking && 
+                             Time.time > baseEnemy.lastAttackTime + baseEnemy.attackDelay;
 
-            if (baseEnemy.currentAttackTime > baseEnemy.lastAttackTime + baseEnemy.attackDelay)
+            if (canAttack)
             {
                 AttackTrigger();
             }

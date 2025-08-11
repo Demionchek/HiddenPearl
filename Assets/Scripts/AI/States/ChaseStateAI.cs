@@ -22,12 +22,12 @@ namespace AI.States
             {
                 direction.Normalize();
                 baseEnemy.rb.linearVelocity = direction * baseEnemy.speed;
-                animatonController.SetAnimatorFloat("Speed", 1f);
+                animatonController.SetAnimatorFloat(AnimationController.SPEED_S, 1f);
             }
             else
             {
                 baseEnemy.rb.linearVelocity = Vector2.zero;
-                animatonController.SetAnimatorFloat("Speed", 0);
+                animatonController.SetAnimatorFloat(AnimationController.SPEED_S, 0);
             }
             animatonController.GetSpriteRenderer().flipX = direction.x < 0;
         }

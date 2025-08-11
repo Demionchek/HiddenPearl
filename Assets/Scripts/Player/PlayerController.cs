@@ -367,19 +367,19 @@ namespace Player
             OnRevive?.Invoke();
         }
 
-        private void OnCollisionEnter2D(Collision2D other)
-        {
-            if (other.collider.gameObject.layer == LayerMask.NameToLayer("Bullet"))
-            {
-                if (!isDead)
-                    Hit();
-            }
-
-            if (other.collider.gameObject.TryGetComponent(out SurfaceEffector2D surfaceEffector))
-            {
-                effectorVelocity = new Vector2(surfaceEffector.speed, 0);
-            }
-        }
+        // private void OnCollisionEnter2D(Collision2D other)
+        // {
+        //     if (other.collider.gameObject.layer == LayerMask.NameToLayer("Bullet"))
+        //     {
+        //         if (!isDead)
+        //             Hit();
+        //     }
+        //
+        //     if (other.collider.gameObject.TryGetComponent(out SurfaceEffector2D surfaceEffector))
+        //     {
+        //         effectorVelocity = new Vector2(surfaceEffector.speed, 0);
+        //     }
+        // }
 
         private void OnCollisionStay2D(Collision2D collision)
         {
