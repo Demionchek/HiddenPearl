@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Animations;
+using Camera;
 using DefaultNamespace;
 using Interfaces;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace Player
         [Header("Other Settings")]
         [SerializeField] private int Health;
         [SerializeField] private int MaxHealth;
+        [SerializeField] private OxygenController oxygenController;
         [SerializeField] private RandomSoundPlayer randomAttackPlayerSound;
         [SerializeField] private RandomSoundPlayer randomHitPlayerSound;
 
@@ -35,6 +37,8 @@ namespace Player
         private DialogueSystem dialogueSystem;
         [Inject]
         private CheckPoints checkPoints;
+        [Inject]
+        private CameraController cameraController;
 
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
@@ -67,12 +71,14 @@ namespace Player
         public bool IsGrounded { get; private set; }
         public float CurrentSpeed { get; private set; }
         public bool isDiving { get; private set; }
+        private bool _previousIsDiving;
         public Vector2 Velocity => rb.linearVelocity;
 
         private Vector2 effectorVelocity = Vector2.zero;
         private bool isSwimming;
-
+        
         public event Action OnRevive;
+        public Action<bool> hasDive { get; set; }
 
         private void Awake()
         {
@@ -147,8 +153,16 @@ namespace Player
 
             // Проверяем, достигли ли мы поверхности воды
             bool atWaterSurface = transform.position.y >= GetWaterSurfaceLevel() - waterSurfaceLevelOffset;
-
+            
+            // Сохраняем предыдущее состояние перед изменением
+            _previousIsDiving = isDiving;
             isDiving = !atWaterSurface;
+
+            // Проверяем изменение состояния и вызываем событие
+            if (_previousIsDiving != isDiving)
+            {
+                hasDive?.Invoke(isDiving);
+            }
 
             // Ограничиваем движение вверх у поверхности воды
             float verticalInput = atWaterSurface && inputHandler.MoveInput.y > 0 ? 0 : inputHandler.MoveInput.y;
@@ -220,6 +234,12 @@ namespace Player
             rb.linearDamping = 5f;
             animController.SetBool("isSwimming", true);
             rb.gravityScale = 0;
+            
+            if (!isDiving)
+            {
+                isDiving = true;
+                hasDive?.Invoke(true);
+            }
         }
 
         private void ExitWater()
@@ -228,6 +248,12 @@ namespace Player
             rb.gravityScale = 1;
             rb.linearDamping = 0;
             animController.SetBool("isSwimming", false);
+            
+            if (isDiving)
+            {
+                isDiving = false;
+                hasDive?.Invoke(false);
+            }
         }
 
         private void HandleAttack()
@@ -367,20 +393,6 @@ namespace Player
             OnRevive?.Invoke();
         }
 
-        // private void OnCollisionEnter2D(Collision2D other)
-        // {
-        //     if (other.collider.gameObject.layer == LayerMask.NameToLayer("Bullet"))
-        //     {
-        //         if (!isDead)
-        //             Hit();
-        //     }
-        //
-        //     if (other.collider.gameObject.TryGetComponent(out SurfaceEffector2D surfaceEffector))
-        //     {
-        //         effectorVelocity = new Vector2(surfaceEffector.speed, 0);
-        //     }
-        // }
-
         private void OnCollisionStay2D(Collision2D collision)
         {
             foreach (ContactPoint2D contact in collision.contacts)
@@ -413,12 +425,14 @@ namespace Player
                 EnterWater();
             }
 
-            if (other.gameObject.layer == LayerMask.NameToLayer("Bullet"))
+            if (other.gameObject.layer == LayerMask.NameToLayer("Hide"))
             {
-                if (!isDead)
-                    Hit();
+                cameraController.SwitchVolumeWeight(0.75f);
+            }
 
-                if (other.TryGetComponent(out Bullet bullet)) Destroy(other.gameObject);
+            if (other.gameObject.layer == LayerMask.NameToLayer("Oxygen"))
+            {
+                oxygenController.FillOxygen();
             }
         }
 
@@ -427,6 +441,12 @@ namespace Player
             if (other.gameObject.layer == LayerMask.NameToLayer("Water"))
             {
                 ExitWater();
+                cameraController.SwitchVolumeWeight(0);
+            }
+            
+            if (other.gameObject.layer == LayerMask.NameToLayer("Hide"))
+            {
+                cameraController.SwitchVolumeWeight(0);
             }
         }
     }

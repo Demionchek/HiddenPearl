@@ -13,10 +13,15 @@ namespace DefaultNamespace
         [SerializeField] private AudioMixerGroup basicGroup;
 
         [Inject] private PlayerController player;
-        
-        private void Update()
+
+        private void Awake()
         {
-            AudioMixerGroup targetGroup = player.isDiving ? underwaterGroup : basicGroup;
+            player.hasDive += SwitchUnderwaterGroup;
+        }
+
+        public void SwitchUnderwaterGroup(bool isDiving)
+        {
+            AudioMixerGroup targetGroup = isDiving ? underwaterGroup : basicGroup;
 
             if (backgroundSource.outputAudioMixerGroup != targetGroup)
             {

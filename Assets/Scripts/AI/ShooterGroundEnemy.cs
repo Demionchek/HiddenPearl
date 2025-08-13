@@ -25,14 +25,20 @@ namespace AI
 
         private void Update()
         {
+            if(isDead) return;
+            
             bool isAttackState = currState is AttackStateAI;
+            bool canAttack = target != null && 
+                             stoppingDistance > Vector2.Distance(transform.position, target.position);
 
-            if (canSeeTarget && !isAttackState )
+            if (canSeeTarget && canAttack && !isAttackState)
             {
                 ChangeState<AttackStateAI>();
             }
+            
+            if (canSeeTarget && !canAttack && !AnimationController.isAttacking) ChangeState<ChaseStateAI>();
 
-            if (!canSeeTarget )
+            if (!canSeeTarget)
             {
                 ChangeState<PatrolStateAI>();
             }

@@ -2,6 +2,7 @@ using System;
 using AI;
 using Interfaces;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Zenject;
 
 namespace DefaultNamespace
@@ -33,11 +34,12 @@ namespace DefaultNamespace
                 other.gameObject.layer == LayerMask.NameToLayer("Bird"))
             {
                 isActive = true;
-                character.doorCondition = true;
+                if (character != null) character.doorCondition = true;
                 if (spriteRenderer != null) spriteRenderer.enabled = false;
                 if (audioSource != null) audioSource.Play();
                 if (sign != null) sign.SetActive(false);
                 if (isTriggerDialog) dialogueSystem.InitDialogue((int)dialogueType);
+                if (TryGetComponent(out Light2D light2D)) light2D.enabled = false;
             }
         }
 

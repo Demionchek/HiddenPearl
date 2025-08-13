@@ -10,6 +10,7 @@ namespace Camera
 
         [SerializeField] private GameObject _curtain;
         [SerializeField] private CinemachineFollow _vcam;
+        [SerializeField] private CinemachineVolumeSettings _volumeSettings;
         private UnityEngine.Camera _camera;
 
         private void Awake()
@@ -18,6 +19,8 @@ namespace Camera
         }
 
         public void SwitchVirtualCamera( bool isActive ) => _vcam.enabled = isActive;
+        
+        public void SwitchVolumeWeight(float weight) => _volumeSettings.Weight = weight;
 
         public void SwitchCurtain( bool isActive ) => _curtain.SetActive(isActive);
 

@@ -86,23 +86,23 @@ namespace DefaultNamespace
             {
                 spriteRenderer.flipX = aiPath.velocity.x < 0;
             }
-
-            // Handle patrol progression when not chasing
-            if (isChasing || patrolPoints.Length == 0 || isWaiting) return;
-
-            if (Vector2.Distance(transform.position, aiDestinationSetter.target.position) < arrivalDistance)
-            {
-                StartCoroutine(WaitAndProceedToNextPatrolPoint());
-            }
-
+            
             // Handle attack when close to target
             if (canSeeTarget && Time.time >= lastAttackTime + attackCooldown)
             {
                 float distanceToTarget = Vector2.Distance(transform.position, target.position);
                 if (distanceToTarget <= attackRange)
                 {
-                    Attack();
+                    animator.SetTrigger(AnimationController.ATTACK_S);
                 }
+            }
+            
+            // Handle patrol progression when not chasing
+            if (isChasing || patrolPoints.Length == 0 || isWaiting) return;
+
+            if (Vector2.Distance(transform.position, aiDestinationSetter.target.position) < arrivalDistance)
+            {
+                StartCoroutine(WaitAndProceedToNextPatrolPoint());
             }
         }
 
@@ -207,7 +207,6 @@ namespace DefaultNamespace
 
         private void Attack()
         {
-            animator.SetTrigger(AnimationController.ATTACK_S);
             lastAttackTime = Time.time;
 
             // Calculate attack point based on facing direction
@@ -224,6 +223,7 @@ namespace DefaultNamespace
                     if (hit.collider != null && hit.collider.TryGetComponent(out IHittable hittable))
                     {
                         hittable.Hit();
+                        break;
                     }
                 }
             }

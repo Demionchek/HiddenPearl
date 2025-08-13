@@ -1,4 +1,5 @@
 using System;
+using Interfaces;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -10,6 +11,8 @@ namespace DefaultNamespace
         public float lifetime = 5f;
         private Rigidbody2D rb;
         private float lifetimeCounter;
+        
+        private bool hasHitted = false;
 
         private void Start()
         {
@@ -39,9 +42,16 @@ namespace DefaultNamespace
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") ||
-                collision.gameObject.layer == LayerMask.NameToLayer("Ignore Raycast")) return;
+                collision.gameObject.layer == LayerMask.NameToLayer("Ignore Raycast")
+                || hasHitted) return;
 
-            Destroy(gameObject);
+            if (collision.TryGetComponent<IHittable>(out IHittable hittable))
+            {
+                hittable.Hit();
+                Destroy(gameObject);
+                hasHitted = true;
+            }
+
         }
     }
 }
