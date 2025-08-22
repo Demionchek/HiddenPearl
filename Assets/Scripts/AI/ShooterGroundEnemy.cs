@@ -14,7 +14,7 @@ namespace AI
         [SerializeField] private Transform shootPosRight;
         private GameObjectPool pool;
 
-        private void Start()
+        private void Awake()
         {
             Init();
             pool = new GameObjectPool(bulletPrefab, 10);
@@ -31,14 +31,14 @@ namespace AI
             bool canAttack = target != null && 
                              stoppingDistance > Vector2.Distance(transform.position, target.position);
 
-            if (canSeeTarget && canAttack && !isAttackState)
+            if (isChasing && canAttack && !isAttackState)
             {
                 ChangeState<AttackStateAI>();
             }
             
-            if (canSeeTarget && !canAttack && !AnimationController.isAttacking) ChangeState<ChaseStateAI>();
+            if (isChasing && !canAttack && !AnimationController.isAttacking) ChangeState<ChaseStateAI>();
 
-            if (!canSeeTarget)
+            if (!isChasing)
             {
                 ChangeState<PatrolStateAI>();
             }
@@ -54,10 +54,11 @@ namespace AI
         protected override void OnAttack()
         {
             if (target == null) return;
-
+            
+            
             GameObject bullet = pool.Get();
             bullet.transform.position = AnimationController.GetSpriteRenderer().flipX ? shootPosLeft.position : shootPosRight.position;
-            Vector2 targetPosition = new Vector2(target.transform.position.x, target.transform.position.y + 0.25f);
+            Vector2 targetPosition = new Vector2(savedHitPosition.x, savedHitPosition.y + 0.25f);
             // Направление к цели
             Vector2 direction = targetPosition - (Vector2)bullet.transform.position;
             // Вычисляем угол в радианах и конвертируем в градусы

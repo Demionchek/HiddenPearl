@@ -315,7 +315,7 @@ Animator:
   m_GameObject: {fileID: 3358912124519178890}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 48cce3f3d6b364c42a43cde0a74f8d2d, type: 2}
+  m_Controller: {fileID: 9100000, guid: 05b77845fc8aecd47afaaac37a297f12, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -515,10 +515,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01256e4350fe4c0ebcf7ed894014e973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 1
   isRange: 1
   startState: 1
-  sightRange: 3
+  sightRange: 2
   sightAngle: 90
   checkFrequency: 0.2
   targetMask:
@@ -527,16 +527,24 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 128
-  attackDelay: 1
+  attackDelay: 2
   attackHoldSec: 0.5
   canSeeTarget: 0
-  patrolPoints: []
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
   waitTimeAtPoint: 2
   reachedPointDistance: 0.1
   currentPointIndex: 0
   isWaiting: 0
   stoppingDistance: 1
+  ignoreOutOfRange: 0
   canAttack: 0
+  isChasing: 0
+  lastKnownPosition: {x: 0, y: 0}
+  savedHitPosition: {x: 0, y: 0}
+  Health: 3
+  MaxHealth: 3
   target: {fileID: 0}
   loopOverrideState: 0
   overrideAIState: 0

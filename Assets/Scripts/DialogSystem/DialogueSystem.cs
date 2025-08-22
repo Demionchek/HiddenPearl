@@ -8,7 +8,6 @@ using Zenject;
 
 namespace DefaultNamespace
 {
-
     public enum DialogType
     {
         Intro,
@@ -19,6 +18,13 @@ namespace DefaultNamespace
         Dialog_5
     }
 
+    [Serializable]
+    public class DialogTimelineTrigger
+    {
+        public DialogType dialogType;
+        public int timelineIndex;
+    }
+
     public class DialogueSystem : MonoBehaviour
     {
         [SerializeField] private GameObject dialoguePanel; // Панель с текстом
@@ -26,9 +32,7 @@ namespace DefaultNamespace
         [SerializeField] private float textSpeed = 0.05f; // Скорость появления текста
         [SerializeField] private float delayAfterLines = 1.5f; // Задержка после последней строки
 
-        [SerializeField] private bool isTriggerCutscene = false;
-        [SerializeField] private DialogType CutsceneTrigger = DialogType.Dialog_3;
-        [SerializeField] private int timelineIndex = 3;
+        [SerializeField] private List<DialogTimelineTrigger> timelineTriggers = new List<DialogTimelineTrigger>();
 
         public bool isDialogRunning = false;
 
@@ -49,9 +53,9 @@ namespace DefaultNamespace
             InputLines(linesContainer.dialogLines[(int)DialogType.Intro].lines);
         }
 
-        public void InitDialogue( int index )
+        public void InitDialogue(int index)
         {
-            if(isDialogRunning) return;
+            if (isDialogRunning) return;
             currentType = (DialogType)index;
 
             ClearLines();
@@ -122,10 +126,44 @@ namespace DefaultNamespace
             dialoguePanel.SetActive(false);
             isDialogRunning = false;
 
-            if (isTriggerCutscene && currentType == CutsceneTrigger)
+            // Проверяем все триггеры и запускаем соответствующие таймлайны
+            foreach (var trigger in timelineTriggers)
             {
-                _timelineManager.PlayCutscene(timelineIndex);
+                if (trigger.dialogType == currentType)
+                {
+                    _timelineManager.PlayCutscene(trigger.timelineIndex);
+                    break; // Запускаем только первый подходящий триггер
+                }
             }
+        }
+
+        // Метод для добавления триггера программно
+        public void AddTimelineTrigger(DialogType dialogType, int timelineIndex)
+        {
+            timelineTriggers.Add(new DialogTimelineTrigger 
+            { 
+                dialogType = dialogType, 
+                timelineIndex = timelineIndex 
+            });
+        }
+
+        // Метод для удаления триггера
+        public void RemoveTimelineTrigger(DialogType dialogType)
+        {
+            timelineTriggers.RemoveAll(trigger => trigger.dialogType == dialogType);
+        }
+
+        // Метод для проверки наличия триггера
+        public bool HasTimelineTrigger(DialogType dialogType)
+        {
+            return timelineTriggers.Exists(trigger => trigger.dialogType == dialogType);
+        }
+
+        // Метод для получения индекса таймлайна по типу диалога
+        public int GetTimelineIndex(DialogType dialogType)
+        {
+            var trigger = timelineTriggers.Find(t => t.dialogType == dialogType);
+            return trigger != null ? trigger.timelineIndex : -1;
         }
     }
 }

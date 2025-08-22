@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using DefaultNamespace;
 using Interfaces;
 using TMPro;
+using Zenject;
 
 namespace DialogSystem
 {
@@ -14,9 +16,13 @@ namespace DialogSystem
         public bool changeTextWithTrigger = false;
         public Opener[]  openers;
         public string triggerText = "";
+        public bool isCheckPoint = false;
+        [SerializeField] private int checkPointIndex = 1;
 
         private Coroutine displayCoroutine;
-
+        
+        [Inject]
+        CheckPoints  checkPoints;
         
         private bool AreAllOpenersActive()
         {
@@ -38,6 +44,7 @@ namespace DialogSystem
                     StopCoroutine(displayCoroutine);
                 }
                 displayCoroutine = StartCoroutine(DisplayText());
+                checkPoints.SetCurrentCheckpoint(1);
             }
         }
 

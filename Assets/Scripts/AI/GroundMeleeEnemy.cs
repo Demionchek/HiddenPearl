@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AI
 {
-    public class GroundMeleeEnemy : BaseEnemy , IHittable , IHealth
+    public class GroundMeleeEnemy : BaseEnemy, IHittable, IHealth
     {
         [Header("GroundEnemySettings")]
         public float attackDistance = 0.3f;
@@ -16,7 +16,6 @@ namespace AI
         private void Start()
         {
             Init();
-            StartCoroutine(DetectionRoutine());
             ChangeState<PatrolStateAI>();
         }
 
@@ -26,19 +25,19 @@ namespace AI
 
             bool isAttackState = currState is AttackStateAI;
 
-            if (canSeeTarget && canAttack && !isAttackState)
+            if (isChasing && canAttack && !isAttackState)
             {
                 ChangeState<AttackStateAI>();
             }
 
             bool isChaseState = currState is ChaseStateAI;
 
-            if (canSeeTarget && !canAttack && !isChaseState)
+            if (isChasing && !canAttack && !isChaseState)
             {
                 ChangeState<ChaseStateAI>();
             }
 
-            if (!canSeeTarget)
+            if (!isChasing)
             {
                 ChangeState<PatrolStateAI>();
             }

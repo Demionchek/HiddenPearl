@@ -17,12 +17,17 @@ namespace Player
         [SerializeField] private float jumpForce = 2.5f;
         [SerializeField] private float rollForce = 1.5f;
         [SerializeField] private float interactDelay = 0.5f;
+        [SerializeField] private Vector2 groundColliderSize;
+		[SerializeField] private Vector2 groundColliderOffset;
 
         [Header("Swimming Settings")]
         [SerializeField] private float swimSpeed = 3f;
         [SerializeField] private float swimUpForce = 1f;
         [SerializeField] private float waterSurfaceLevelOffset = 3.5f;
         [SerializeField] private LayerMask waterLayer;
+        [SerializeField] private Vector2 swimColliderSize;
+		[SerializeField] private Vector2 swimColliderOffset;
+        
 
         [Header("Other Settings")]
         [SerializeField] private int Health;
@@ -62,6 +67,13 @@ namespace Player
         {
             return MaxHealth;
         }
+
+        public void IncreaseHealth(int amount)
+        {
+            MaxHealth += amount;
+            SetHealth(MaxHealth);
+        }
+
         public void SetHealth(int health)
         {
             Health = health;
@@ -77,11 +89,14 @@ namespace Player
         private Vector2 effectorVelocity = Vector2.zero;
         private bool isSwimming;
         
+        public static PlayerController Instance { get; private set; }
+        
         public event Action OnRevive;
         public Action<bool> hasDive { get; set; }
 
         private void Awake()
         {
+            Instance = this;
             rb = GetComponent<Rigidbody2D>();
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             boxTriggerCollider = GetComponent<BoxCollider2D>();
@@ -168,6 +183,8 @@ namespace Player
             float verticalInput = atWaterSurface && inputHandler.MoveInput.y > 0 ? 0 : inputHandler.MoveInput.y;
 
             Vector2 swimDirection = new Vector2(inputHandler.MoveInput.x, verticalInput).normalized;
+            
+            SwitchColliderSwimming(swimDirection.x > 0.1f);
 
             // Добавляем силу движения
             rb.AddForce(swimDirection * swimSpeed, ForceMode2D.Force);
@@ -182,6 +199,26 @@ namespace Player
             if (atWaterSurface && IsGrounded)
             {
                 CheckWaterExit();
+            }
+        }
+
+        private void SwitchColliderSwimming(bool isSwimming)
+        {
+            if (isSwimming)
+            {
+                capsuleCollider.direction = CapsuleDirection2D.Horizontal;
+                capsuleCollider.size = swimColliderSize;
+                capsuleCollider.offset = swimColliderOffset;
+                boxTriggerCollider.size = swimColliderSize;
+                boxTriggerCollider.offset = swimColliderOffset;
+            }
+            else
+            {
+                capsuleCollider.direction = CapsuleDirection2D.Vertical;
+                capsuleCollider.size = groundColliderSize;
+                capsuleCollider.offset = groundColliderOffset;
+                boxTriggerCollider.size = groundColliderSize;
+                boxTriggerCollider.offset = groundColliderOffset;
             }
         }
 
@@ -248,6 +285,8 @@ namespace Player
             rb.gravityScale = 1;
             rb.linearDamping = 0;
             animController.SetBool("isSwimming", false);
+            
+            SwitchColliderSwimming(false);
             
             if (isDiving)
             {
@@ -358,6 +397,13 @@ namespace Player
 
         private void UpdateAnimationParameters()
         {
+            if(dialogueSystem.isDialogRunning) {
+                animController.SetMovementParameters(
+                0,
+                IsGrounded);
+                return;
+            };
+            
             animController.SetMovementParameters(
                 Mathf.Abs(inputHandler.MoveInput.x),
                 IsGrounded
@@ -433,6 +479,19 @@ namespace Player
             if (other.gameObject.layer == LayerMask.NameToLayer("Oxygen"))
             {
                 oxygenController.FillOxygen();
+            }
+        }
+
+        private void OnTriggerStay2D(Collider2D other)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Water"))
+            {
+                bool atWaterSurface = transform.position.y <= GetWaterSurfaceLevel();
+                
+                if (!isSwimming && !atWaterSurface)
+                {
+                    rb.gravityScale = 0.5f;
+                }
             }
         }
 

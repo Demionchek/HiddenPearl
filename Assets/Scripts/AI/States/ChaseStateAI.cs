@@ -15,7 +15,8 @@ namespace AI.States
             if (baseEnemy.target == null)
                 return;
 
-            Vector2 direction = baseEnemy.target.position - baseEnemy.transform.position;
+            Vector2 targetPos = baseEnemy.canSeeTarget ? (Vector2)baseEnemy.target.position : baseEnemy.lastKnownPosition;
+            Vector2 direction = targetPos - (Vector2)baseEnemy.transform.position;
             float distance = direction.magnitude;
 
             if (distance > baseEnemy.stoppingDistance)
@@ -25,8 +26,22 @@ namespace AI.States
             }
             else
             {
+                RaycastHit2D[] hits = Physics2D.CircleCastAll(baseEnemy.transform.position, 0.5f, Vector2.up);
+
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
+                    {
+                        baseEnemy.canSeeTarget = true;
+                    }
+                }
+                
                 baseEnemy.rb.linearVelocity = Vector2.zero;
-                //animatonController.SetAnimatorFloat(AnimationController.SPEED_S, 0);
+                if (!baseEnemy.canSeeTarget)
+                {
+                    baseEnemy.isChasing = false;
+                    baseEnemy.ChangeState<PatrolStateAI>();
+                }
             }
             animatonController.SetAnimatorFloat(AnimationController.SPEED_S, 1f);
 

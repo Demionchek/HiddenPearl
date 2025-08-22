@@ -14,6 +14,7 @@ namespace AI.States
             if (baseEnemy.patrolPoints.Count < 2)
             {
                 baseEnemy.ChangeState<IdleStateAI>();
+                return;
             }
 
             if(baseEnemy.isWaiting) return;
@@ -68,7 +69,6 @@ namespace AI.States
                 return;
             }
 
-            // Линейное патрулирование A-B-C-D-A-B-C-D...
             baseEnemy.currentPointIndex = (baseEnemy.currentPointIndex + 1) % baseEnemy.patrolPoints.Count;
         }
     }

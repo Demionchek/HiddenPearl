@@ -9,6 +9,7 @@ namespace DefaultNamespace
 
         public int GetHealth();
         public int GetMaxHealth();
+        public void IncreaseHealth(int amount);
         public void SetHealth(int health);
     }
 }

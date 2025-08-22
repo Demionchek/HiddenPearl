@@ -1,3 +1,4 @@
+using DefaultNamespace;
 using Player;
 using Zenject;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace Animations
 
         [Inject]
         private InputHandler inputHandler;
+        [Inject]
+        private DialogueSystem dialogSystem;
 
         private void Awake()
         {
@@ -21,6 +24,7 @@ namespace Animations
 
         private void Update()
         {
+            if(dialogSystem.isDialogRunning) return;
             UpdateSpriteDirection();
         }
 

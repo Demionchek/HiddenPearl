@@ -2,7 +2,7 @@ using AI.States;
 using Animations;
 using UnityEngine;
 
-namespace AI
+namespace AI.States
 {
     public class AttackStateAI : BaseStateAI
     {
@@ -29,6 +29,18 @@ namespace AI
                     return;
                 }
             }
+
+            if (!animatonController.isAttacking && !baseEnemy.canSeeTarget)
+            {
+                if (baseEnemy.isChasing)
+                {
+                    baseEnemy.ChangeState<ChaseStateAI>();
+                }
+                else
+                {
+                    baseEnemy.ChangeState<IdleStateAI>();
+                }
+            }
             
             bool canAttack = !animatonController.isAttacking && 
                              Time.time > baseEnemy.lastAttackTime + baseEnemy.attackDelay;
@@ -37,11 +49,6 @@ namespace AI
             {
                 AttackTrigger();
             }
-
-            if (!animatonController.isAttacking && !baseEnemy.canSeeTarget)
-            {
-                baseEnemy.ChangeState<IdleStateAI>();
-            }
         }
 
         private void AttackTrigger()
@@ -49,6 +56,7 @@ namespace AI
             animatonController.SetAnimatorTrigger(AnimationController.ATTACK_S);
             animatonController.isAttacking = true;
             baseEnemy.lastAttackTime = Time.time;
+            baseEnemy.savedHitPosition = baseEnemy.target.position;
             if (baseEnemy.target != null && baseEnemy.canSeeTarget)
             {
                 Vector2 dir = baseEnemy.target.transform.position - baseEnemy.transform.position;
