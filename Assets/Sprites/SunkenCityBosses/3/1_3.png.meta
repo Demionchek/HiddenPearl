@@ -46,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -125,12 +125,12 @@ TextureImporter:
       name: 1_3_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 18
-        width: 48
-        height: 59
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 19
+        y: 19
+        width: 46
+        height: 57
+      alignment: 9
+      pivot: {x: 0.5674137, y: 0.6677546}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -143,77 +143,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: 1_3_1
-      rect:
-        serializedVersion: 2
-        x: 125
-        y: 14
-        width: 34
-        height: 66
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 72af1260e0c5953f0800000000000000
-      internalID: -911596234263627225
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 1_3_2
-      rect:
-        serializedVersion: 2
-        x: 219
-        y: 10
-        width: 44
-        height: 68
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2696e5418b7b51c40800000000000000
-      internalID: 5482490122637044066
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 1_3_3
-      rect:
-        serializedVersion: 2
-        x: 311
-        y: 11
-        width: 51
-        height: 62
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ed5c4be3dbec72000800000000000000
-      internalID: 11204836287890910
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 94326a13f7864f8488103a9c141067b0
     internalID: 0
     vertices: []
     indices: 
@@ -221,7 +155,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":1.0},"autoSlicingMethod":0,"spriteAlignment":2,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       1_3_0: 4641925799719628613
       1_3_1: -911596234263627225

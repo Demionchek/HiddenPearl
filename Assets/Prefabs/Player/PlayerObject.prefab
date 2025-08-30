@@ -203,7 +203,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 0.1
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -406,13 +406,17 @@ MonoBehaviour:
   jumpForce: 2.5
   rollForce: 2
   interactDelay: 0.5
+  groundColliderSize: {x: 0.216, y: 0.326}
+  groundColliderOffset: {x: 0.0174, y: 0.175}
   swimSpeed: 3
   swimUpForce: 1
   waterSurfaceLevelOffset: 0.35
   waterLayer:
     serializedVersion: 2
     m_Bits: 16
-  Health: 0
+  swimColliderSize: {x: 0.42, y: 0.22}
+  swimColliderOffset: {x: 0.0174, y: 0.15}
+  Health: 3
   MaxHealth: 3
   oxygenController: {fileID: 5285789566787568750}
   randomAttackPlayerSound: {fileID: 4433539580046406722}
@@ -508,6 +512,10 @@ PrefabInstance:
     - target: {fileID: 7050571903299601746, guid: 10480840db94f634593535ed560ef206, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8068997937099233974, guid: 10480840db94f634593535ed560ef206, type: 3}
+      propertyPath: oxygenMax
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
