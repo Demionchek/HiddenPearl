@@ -49,7 +49,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -128,12 +128,12 @@ TextureImporter:
       name: 4_2_0
       rect:
         serializedVersion: 2
-        x: 29
-        y: 29
-        width: 14
-        height: 14
+        x: 30
+        y: 30
+        width: 12
+        height: 12
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -150,12 +150,12 @@ TextureImporter:
       name: 4_2_1
       rect:
         serializedVersion: 2
-        x: 99
-        y: 28
-        width: 9
-        height: 11
+        x: 242
+        y: 24
+        width: 20
+        height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -169,37 +169,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 4_2_2
-      rect:
-        serializedVersion: 2
-        x: 101
-        y: 37
-        width: 15
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7444309d30f80fbb0800000000000000
-      internalID: -4904262747517926329
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: 4_2_3
       rect:
         serializedVersion: 2
-        x: 170
-        y: 23
-        width: 93
-        height: 26
+        x: 171
+        y: 26
+        width: 19
+        height: 20
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -213,23 +191,23 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 4_2_4
+      name: 4_2_2
       rect:
         serializedVersion: 2
-        x: 106
-        y: 27
-        width: 12
-        height: 8
+        x: 100
+        y: 28
+        width: 17
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: b72f457632ea19990800000000000000
-      internalID: -7380926847202823557
+      spriteID: cd25b24e931358d46bc42b20e3ad2ac9
+      internalID: -4904262747517926329
       vertices: []
       indices: 
       edges: []
@@ -238,7 +216,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: d2de00956a320e9418e2cf73bb21e608
     internalID: 0
     vertices: []
     indices: 

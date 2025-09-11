@@ -1,45 +1,95 @@
+using System.Collections.Generic;
 using Interfaces;
+using System.Collections;
 using UnityEngine;
+using DG.Tweening;
 
 namespace AI.BossPatterns
 {
-    // Контроллер луча
+
     public class BeamController : MonoBehaviour
     {
-        private float duration;
-        private float width;
-        private Vector2 direction;
-        private float elapsed;
-    
-        public void Initialize(Vector2 beamDirection, float beamDuration, float beamWidth)
+        [Header("References")]
+        public GameObject beamChildObject; // Дочерний объект с лучом
+        public Transform beamTransform; // Transform дочернего луча для анимации
+        public Collider2D beamCollider; // Коллайдер луча для обнаружения попаданий
+
+        [Header("Beam Settings")]
+        public float beamShrinkDuration = 0.5f;
+        public float beamStartDelay = 0.2f;
+        public int beamDamage = 5;
+        public float damageInterval = 0.1f; // Интервал между нанесением урона
+
+        private Animator animator;
+        private bool isBeamActive = false;
+        private Vector3 originalBeamScale;
+        private float lastDamageTime;
+        private HashSet<Collider2D> damagedTargets = new HashSet<Collider2D>();
+
+        void Start()
         {
-            direction = beamDirection;
-            duration = beamDuration;
-            width = beamWidth;
-            elapsed = 0f;
-        
-            // Настройка визуала луча
-            transform.localScale = new Vector3(width, 1f, 1f);
-            transform.right = direction;
+            animator = GetComponent<Animator>();
         }
-    
-        void Update()
+
+        // Метод для запуска луча из внешнего кода
+        public void Initialize()
         {
-            elapsed += Time.deltaTime;
-        
-            if (elapsed >= duration)
+            gameObject.SetActive(true);
+            damagedTargets.Clear();
+        }
+
+
+        // Обработка попаданий через коллайдер
+        void OnTriggerEnter2D(Collider2D other)
+        {
+            HandleDamage(other);
+        }
+
+        void OnTriggerStay2D(Collider2D other)
+        {
+            // Наносим урон с интервалом
+            if (Time.time - lastDamageTime >= damageInterval)
             {
-                Destroy(gameObject);
+                HandleDamage(other);
+                lastDamageTime = Time.time;
             }
         }
-    
-        void OnTriggerEnter2D(Collider2D other)
+
+        private void HandleDamage(Collider2D other)
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
-                // Нанесение урона игроку
-                other.GetComponent<IHittable>().Hit();
+                // Проверяем, чтобы не наносить урон несколько раз за один "тик"
+                // если объект уже получил урон в этом интервале
+                if (damagedTargets.Contains(other))
+                    return;
+
+                IHittable playerHealth = other.GetComponent<IHittable>();
+                if (playerHealth != null)
+                {
+                    playerHealth.Hit();
+                    damagedTargets.Add(other);
+
+                    // Очищаем хэшсет через небольшое время
+                    StartCoroutine(ClearDamagedTarget(other));
+                }
             }
         }
+
+        private IEnumerator ClearDamagedTarget(Collider2D target)
+        {
+            yield return new WaitForSeconds(damageInterval * 1.1f);
+            damagedTargets.Remove(target);
+        }
+
+        // Очистка при уничтожении
+        void OnDestroy()
+        {
+            if (beamTransform != null)
+            {
+                beamTransform.DOKill();
+            }
+        }
+
     }
 }

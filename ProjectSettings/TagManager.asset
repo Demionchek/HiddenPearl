@@ -20,7 +20,7 @@ TagManager:
   - Collectable
   - Oxygen
   - Boss
-  - 
+  - Cannonball
   - 
   - 
   - 
@@ -39,11 +39,14 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Default
-    uniqueID: 0
-    locked: 0
   - name: Background
     uniqueID: 2891235379
+    locked: 0
+  - name: lightBackward
+    uniqueID: 4115812961
+    locked: 0
+  - name: Default
+    uniqueID: 0
     locked: 0
   - name: UI
     uniqueID: 30894381

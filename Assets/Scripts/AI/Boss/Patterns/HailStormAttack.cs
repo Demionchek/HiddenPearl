@@ -1,6 +1,7 @@
 using System.Collections;
 using AI.BossPatterns;
 using AI.BossPatterns.Patterns;
+using ObjectPool;
 using UnityEngine;
 
 namespace AI.Boss.Patterns
@@ -13,16 +14,20 @@ namespace AI.Boss.Patterns
         public float randomSpawnDisatnce = 2;
         public int hailCount = 8;
         public float hailInterval = 0.3f;
-    
+
+        private GameObjectPool _pool;
+
         protected override IEnumerator OnAttack()
         {
             // Поворот головы вверх
             rb.MoveRotation(90f);
-        
+
+            if (_pool == null) _pool = new GameObjectPool(hailProjectilePrefab, hailCount);
+
             // Анимация "рычания"
             if (animator != null)
                 animator.SetTrigger("Roar");
-        
+
             // Создание градин
             for (int i = 0; i < hailCount; i++)
             {
@@ -30,19 +35,20 @@ namespace AI.Boss.Patterns
                 yield return new WaitForSeconds(hailInterval);
             }
         }
-    
+
         private void SpawnHail()
         {
             Vector2 spawnPos = hailSpawnPoint.position;
             spawnPos.x += Random.Range(-randomSpawnDisatnce, randomSpawnDisatnce);
             Vector2 targetPos = spawnPos + Vector2.down * 20f; // Падение сверху вниз
-        
-            GameObject hail = Instantiate(hailProjectilePrefab, spawnPos, Quaternion.identity);
+
+            GameObject hail = _pool.Get();
+            hail.transform.position = spawnPos;
             HailProjectile projectile = hail.GetComponent<HailProjectile>();
-            
+
             if (projectile != null)
             {
-                projectile.Initialize(targetPos);
+                projectile.Initialize(targetPos, _pool);
             }
         }
     }

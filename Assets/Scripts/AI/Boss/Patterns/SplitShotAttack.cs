@@ -1,6 +1,7 @@
 using AI.BossPatterns;
 using AI.BossPatterns.Patterns;
 using System.Collections;
+using ObjectPool;
 using UnityEngine;
 
 namespace AI.Boss.Patterns
@@ -15,16 +16,23 @@ namespace AI.Boss.Patterns
         public float spreadAngle = 30f;
         public int shotsPerVolley = 3;
         public float shotDelay = 0.2f;
-        
+
+        private GameObjectPool _pool;
+
         protected override IEnumerator OnPreparation()
         {
             // Анимация открытия пасти
             if (animator != null)
-                animator.SetTrigger("ChargeShot");
-                
+                animator.SetTrigger("Prepare");
+
+            if (_pool == null)
+            {
+                _pool = new GameObjectPool(projectilePrefab, 20);
+            }
+
             yield return new WaitForSeconds(preparationTime);
         }
-        
+
         protected override IEnumerator OnAttack()
         {
             for (int i = 0; i < shotsPerVolley; i++)
@@ -33,33 +41,33 @@ namespace AI.Boss.Patterns
                 yield return new WaitForSeconds(shotDelay);
             }
         }
-        
+
         private void FireSplitShot()
         {
             if (firePoints.Length != 3) return;
-            
+
             // Выстрел тремя снарядами веером
             for (int i = 0; i < 3; i++)
             {
                 Vector2 fireDirection = CalculateSpreadDirection(i);
-                GameObject projectile = Instantiate(projectilePrefab, firePoints[i].position, Quaternion.identity);
-                
+                GameObject projectile = _pool.Get();
+                projectile.transform.position = firePoints[i].position;
                 Projectile proj = projectile.GetComponent<Projectile>();
                 if (proj != null)
                 {
-                    proj.Initialize(fireDirection, projectileSpeed);
+                    proj.Initialize(fireDirection, projectileSpeed, _pool);
                 }
             }
-            
+
             // Визуальный эффект выстрела
             if (animator != null)
-                animator.SetTrigger("Fire");
+                animator.SetTrigger("Attack");
         }
-        
+
         private Vector2 CalculateSpreadDirection(int index)
         {
-            Vector2 baseDirection = transform.right; // Направление головы
-            
+            Vector2 baseDirection = -transform.right; // Направление головы
+
             // Расчет угла для каждого снаряда
             float angle;
             switch (index)
@@ -69,16 +77,16 @@ namespace AI.Boss.Patterns
                 case 2: angle = spreadAngle; break;  // Правый
                 default: angle = 0f; break;
             }
-            
+
             // Поворот направления на угол
             return Quaternion.Euler(0, 0, angle) * baseDirection;
         }
-        
+
         protected override IEnumerator OnCooldown()
         {
             if (animator != null)
                 animator.SetTrigger("Reload");
-                
+
             yield return new WaitForSeconds(cooldownTime);
         }
     }

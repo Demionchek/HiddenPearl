@@ -137,11 +137,11 @@ TextureImporter:
       name: Special_0
       rect:
         serializedVersion: 2
-        x: 96
+        x: 97
         y: 0
-        width: 78
-        height: 33
-      alignment: 0
+        width: 77
+        height: 32
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -159,11 +159,11 @@ TextureImporter:
       name: Special_1
       rect:
         serializedVersion: 2
-        x: 191
+        x: 192
         y: 0
-        width: 86
-        height: 29
-      alignment: 0
+        width: 85
+        height: 33
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -178,36 +178,14 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Special_2
-      rect:
-        serializedVersion: 2
-        x: 196
-        y: 25
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d651c66d3746af9a0800000000000000
-      internalID: -6198531488440642195
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Special_3
       rect:
         serializedVersion: 2
-        x: 288
+        x: 289
         y: 0
-        width: 57
+        width: 86
         height: 35
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -225,11 +203,11 @@ TextureImporter:
       name: Special_4
       rect:
         serializedVersion: 2
-        x: 3
+        x: 4
         y: 0
-        width: 52
-        height: 23
-      alignment: 0
+        width: 50
+        height: 22
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -244,36 +222,14 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Special_5
-      rect:
-        serializedVersion: 2
-        x: 342
-        y: 11
-        width: 34
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7859ff1cb3bfdc3d0800000000000000
-      internalID: -3184613127404677753
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Special_6
       rect:
         serializedVersion: 2
-        x: 385
+        x: 386
         y: 0
-        width: 52
-        height: 23
-      alignment: 0
+        width: 50
+        height: 22
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -291,11 +247,11 @@ TextureImporter:
       name: Special_7
       rect:
         serializedVersion: 2
-        x: 482
+        x: 483
         y: 0
-        width: 52
-        height: 23
-      alignment: 0
+        width: 50
+        height: 22
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -313,7 +269,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 1a85049351999ce4e833ca109562553c
     internalID: 0
     vertices: []
     indices: 
