@@ -1,7 +1,7 @@
 using System.Collections;
 using AI.BossPatterns.Patterns;
 using UnityEngine;
-    
+
 namespace AI.BossPatterns
 {
     public class AttackManager : MonoBehaviour
@@ -15,29 +15,38 @@ namespace AI.BossPatterns
             public int maxAttacks = 3;
             public float phaseCooldown = 2f;
         }
-        
+
         [Header("Attack Settings")]
         public AttackPhase[] phases;
         public float timeBetweenAttacks = 1.5f;
         public bool loopPhases = true;
-        
+
         [Header("References")]
         public Transform player;
         public Animator snakeAnimator;
-        
+        public BossHealthBar bossHealthBar;
+
         private Rigidbody2D rb;
         private SnakeAI snakeAI;
         private int currentPhase = 0;
         private bool isAttacking = false;
         private Coroutine attackCoroutine;
-        
+
         void Start()
         {
             rb = GetComponent<Rigidbody2D>();
             snakeAI = GetComponent<SnakeAI>();
             InitializePatterns();
+
+            bossHealthBar.OnDeath += InitDeath;
+            bossHealthBar.OnHit += IncreasePhase;
         }
-        
+
+        private void InitDeath()
+        {
+            InterruptAttacks();
+        }
+
         public void StartAttacks()
         {
             if (!isAttacking)
@@ -45,7 +54,7 @@ namespace AI.BossPatterns
                 attackCoroutine = StartCoroutine(AttackCycle());
             }
         }
-        
+
         private void InitializePatterns()
         {
             foreach (AttackPhase phase in phases)
@@ -53,7 +62,7 @@ namespace AI.BossPatterns
                 foreach (AttackPattern pattern in phase.attackPatterns)
                 {
                     pattern.Initialize(snakeAI, rb, snakeAnimator);
-                    
+
                     // Передаем ссылку на игрока если нужно
                     if (pattern is DashArcAttack dashAttack && player != null)
                     {
@@ -62,41 +71,43 @@ namespace AI.BossPatterns
                 }
             }
         }
-        
+
         private IEnumerator AttackCycle()
         {
             isAttacking = true;
-            
+
             while (loopPhases)
             {
                 yield return StartCoroutine(ExecutePhase(currentPhase));
-                
+
                 // Переход к следующей фазе
                 //currentPhase = (currentPhase + 1) % phases.Length;
                 yield return new WaitForSeconds(phases[currentPhase].phaseCooldown);
             }
-            
+
             isAttacking = false;
         }
 
         public void IncreasePhase()
         {
-            currentPhase = (currentPhase + 1) % phases.Length;  
-        } 
-        
+            if (currentPhase == phases.Length - 1) return;
+
+            currentPhase = (currentPhase + 1) % phases.Length;
+        }
+
         private IEnumerator ExecutePhase(int phaseIndex)
         {
             AttackPhase phase = phases[phaseIndex];
             int attackCount = Random.Range(phase.minAttacks, phase.maxAttacks + 1);
-            
+
             for (int i = 0; i < attackCount; i++)
             {
                 // Выбор случайного паттерна из фазы
                 AttackPattern pattern = phase.attackPatterns[Random.Range(0, phase.attackPatterns.Length)];
-                
+
                 // Запуск паттерна
                 yield return StartCoroutine(pattern.ExecutePattern());
-                
+
                 // Пауза между атаками
                 if (i < attackCount - 1)
                 {
@@ -104,14 +115,14 @@ namespace AI.BossPatterns
                 }
             }
         }
-        
+
         public void InterruptAttacks()
         {
             if (attackCoroutine != null)
             {
                 StopCoroutine(attackCoroutine);
             }
-            
+
             // Останавливаем все паттерны
             foreach (AttackPhase phase in phases)
             {
@@ -120,15 +131,15 @@ namespace AI.BossPatterns
                     pattern.StopAllCoroutines();
                 }
             }
-            
+
             isAttacking = false;
         }
-        
+
         public void SetPhase(int newPhase)
         {
             currentPhase = Mathf.Clamp(newPhase, 0, phases.Length - 1);
         }
-        
+
         public bool IsAttacking()
         {
             return isAttacking;

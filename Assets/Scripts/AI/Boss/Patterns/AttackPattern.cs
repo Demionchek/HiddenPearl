@@ -12,6 +12,7 @@ namespace AI.BossPatterns.Patterns
         public float attackDuration = 2f;
         public float cooldownTime = 1f;
         public Transform playerTarget;
+        public AudioClip attackSound;
 
         protected SnakeAI snakeAI;
         protected Rigidbody2D rb;

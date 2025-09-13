@@ -28,7 +28,20 @@ namespace AI.Boss.Patterns
             if (animator != null)
                 animator.SetTrigger("Roar");
 
+            if (attackSound != null && snakeAI != null)
+                snakeAI.PlayTargetSound(attackSound);
+
             // Создание градин
+            StartCoroutine(ProjectileCoroutine());
+
+            yield return new WaitForSeconds(attackDuration);
+
+            if (animator != null)
+                animator.SetTrigger("Cooldown");
+        }
+
+        private IEnumerator ProjectileCoroutine()
+        {
             for (int i = 0; i < hailCount; i++)
             {
                 SpawnHail();

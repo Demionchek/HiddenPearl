@@ -8,17 +8,32 @@ namespace AI.BossPatterns.Patterns
         [Header("Dash Settings")]
         public float dashTime = 1f;
         public float arcHeight = 3f;
+        public Vector2 targetOffset;
+        public CircleCollider2D dashCollider;
 
         protected override IEnumerator OnAttack()
         {
             Vector2 startPos = rb.position;
-            Vector2 dashTarget = playerTarget.position;
+            Vector2 dashTarget = (Vector2)playerTarget.position + targetOffset;
 
             if (animator != null)
                 animator.SetTrigger("Attack");
 
+            if (attackSound != null && snakeAI != null)
+                snakeAI.PlayTargetSound(attackSound);
+
+            dashCollider.enabled = true;
+
             // Рывок к игроку по прямой
             yield return StartCoroutine(MoveToPosition(dashTarget, dashTime, 10f));
+
+            if (animator != null)
+                animator.SetTrigger("Cooldown");
+
+            if (attackSound != null && snakeAI != null)
+                snakeAI.PlayTargetSound(null);
+
+            dashCollider.enabled = false;
 
             // Возврат по дуге
             float returnDuration = 1.5f;
@@ -42,9 +57,6 @@ namespace AI.BossPatterns.Patterns
 
                 yield return new WaitForFixedUpdate();
             }
-
-            if (animator != null)
-                animator.SetTrigger("Cooldown");
 
             // Точное возвращение в стартовую позицию
             yield return StartCoroutine(MoveToPosition(startPos, 0.3f));

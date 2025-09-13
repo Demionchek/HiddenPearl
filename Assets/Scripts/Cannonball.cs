@@ -48,7 +48,7 @@ public class Cannonball : MonoBehaviour
             if (hitEffect != null)
             {
                 GameObject hitObj = Instantiate(hitEffect, transform.position, Quaternion.identity);
-                Destroy(hitObj, 1);
+                Destroy(hitObj, 0.3f);
             }
 
             Destroy(gameObject);

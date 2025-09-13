@@ -182,16 +182,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ec35daee9b4e2380b1cb57687661fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackSign: {fileID: 0}
+  attackSign: {fileID: 7831228380566925136}
   chargeFillImage: {fileID: 5072221677283615535}
   cannonballPrefab: {fileID: 8172789606271888064, guid: 379fcf2e97380344e93343341cce9bff, type: 3}
   firePoint: {fileID: 6372691709440165515}
   cannonAnimator: {fileID: 953041363483873748}
   cannonLight: {fileID: 9037876784257604469}
   chargeSpeed: 1
-  maxChargeTime: 10
+  maxChargeTime: 20
   chargingSound: {fileID: 0}
-  fireSound: {fileID: 0}
+  fireSound: {fileID: 8300000, guid: b4731b84f9378ba42a384f8914125561, type: 3}
 --- !u!95 &953041363483873748
 Animator:
   serializedVersion: 7
@@ -271,7 +271,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: b4731b84f9378ba42a384f8914125561, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

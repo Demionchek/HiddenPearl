@@ -27,14 +27,17 @@ namespace Player
         [SerializeField] private LayerMask waterLayer;
         [SerializeField] private Vector2 swimColliderSize;
 		[SerializeField] private Vector2 swimColliderOffset;
-        
+
 
         [Header("Other Settings")]
         [SerializeField] private int Health;
         [SerializeField] private int MaxHealth;
         [SerializeField] private OxygenController oxygenController;
-        [SerializeField] private RandomSoundPlayer randomAttackPlayerSound;
-        [SerializeField] private RandomSoundPlayer randomHitPlayerSound;
+        [SerializeField] private RandomSoundPlayer attackPlayerSound;
+        [SerializeField] private RandomSoundPlayer hitPlayerSound;
+        [SerializeField] private RandomSoundPlayer jumpPlayerSound;
+        [SerializeField] private RandomSoundPlayer doubleJumpPlayerSound;
+        [SerializeField] private RandomSoundPlayer deathPlayerSound;
 
         [Inject]
         private InputHandler inputHandler;
@@ -88,9 +91,9 @@ namespace Player
 
         private Vector2 effectorVelocity = Vector2.zero;
         private bool isSwimming;
-        
+
         public static PlayerController Instance { get; private set; }
-        
+
         public event Action OnRevive;
         public Action<bool> hasDive { get; set; }
 
@@ -168,7 +171,7 @@ namespace Player
 
             // Проверяем, достигли ли мы поверхности воды
             bool atWaterSurface = transform.position.y >= GetWaterSurfaceLevel() - waterSurfaceLevelOffset;
-            
+
             // Сохраняем предыдущее состояние перед изменением
             _previousIsDiving = isDiving;
             isDiving = !atWaterSurface;
@@ -183,7 +186,7 @@ namespace Player
             float verticalInput = atWaterSurface && inputHandler.MoveInput.y > 0 ? 0 : inputHandler.MoveInput.y;
 
             Vector2 swimDirection = new Vector2(inputHandler.MoveInput.x, verticalInput).normalized;
-            
+
             SwitchColliderSwimming(swimDirection.x > 0.1f);
 
             // Добавляем силу движения
@@ -252,6 +255,16 @@ namespace Player
                rb.linearVelocity = Vector2.zero;
                rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
                isDoubleJumping = !isDoubleJumping;
+
+               if (!isDoubleJumping)
+               {
+                   if(jumpPlayerSound != null)
+                       jumpPlayerSound.PlayRandomSoundNow();
+               } else
+               {
+                   if(doubleJumpPlayerSound != null)
+                       doubleJumpPlayerSound.PlayRandomSoundNow();
+               }
             }
         }
 
@@ -271,7 +284,7 @@ namespace Player
             rb.linearDamping = 5f;
             animController.SetBool("isSwimming", true);
             rb.gravityScale = 0;
-            
+
             if (!isDiving)
             {
                 isDiving = true;
@@ -285,9 +298,9 @@ namespace Player
             rb.gravityScale = 1;
             rb.linearDamping = 0;
             animController.SetBool("isSwimming", false);
-            
+
             SwitchColliderSwimming(false);
-            
+
             if (isDiving)
             {
                 isDiving = false;
@@ -378,8 +391,8 @@ namespace Player
         private IEnumerator PlayAttackSoundWithDelay()
         {
             yield return new WaitForSeconds(0.1f);
-            if (randomAttackPlayerSound != null)
-                randomAttackPlayerSound.PlayRandomSoundNow();
+            if (attackPlayerSound != null)
+                attackPlayerSound.PlayRandomSoundNow();
         }
 
         // Отрисовка радиуса в редакторе
@@ -403,7 +416,7 @@ namespace Player
                 IsGrounded);
                 return;
             };
-            
+
             animController.SetMovementParameters(
                 Mathf.Abs(inputHandler.MoveInput.x),
                 IsGrounded
@@ -423,6 +436,13 @@ namespace Player
                 rb.gravityScale = 1;
 
                 StartCoroutine(ReviveCoroutine());
+
+                if (deathPlayerSound != null)
+                    deathPlayerSound.PlayRandomSoundNow();
+            } else
+            {
+                if (hitPlayerSound != null)
+                    hitPlayerSound.PlayRandomSoundNow();
             }
         }
 
@@ -487,7 +507,7 @@ namespace Player
             if (other.gameObject.layer == LayerMask.NameToLayer("Water"))
             {
                 bool atWaterSurface = transform.position.y <= GetWaterSurfaceLevel();
-                
+
                 if (!isSwimming && !atWaterSurface)
                 {
                     rb.gravityScale = 0.5f;
@@ -502,7 +522,7 @@ namespace Player
                 ExitWater();
                 cameraController.SwitchVolumeWeight(0);
             }
-            
+
             if (other.gameObject.layer == LayerMask.NameToLayer("Hide"))
             {
                 cameraController.SwitchVolumeWeight(0);
