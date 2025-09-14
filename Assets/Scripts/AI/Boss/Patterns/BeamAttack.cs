@@ -70,7 +70,7 @@ namespace AI.Boss.Patterns
             yield return StartCoroutine(MoveToPosition(combatPos, cooldownTime));
 
             if (animator != null)
-                animator.SetTrigger("CloseMouth");
+                animator.SetTrigger("Cooldown");
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using DefaultNamespace;
 using UnityEngine;
 
 namespace AI.BossPatterns.Patterns
@@ -9,7 +10,7 @@ namespace AI.BossPatterns.Patterns
         public float dashTime = 1f;
         public float arcHeight = 3f;
         public Vector2 targetOffset;
-        public CircleCollider2D dashCollider;
+        public DamageTrigger damageTrigger;
 
         protected override IEnumerator OnAttack()
         {
@@ -22,18 +23,18 @@ namespace AI.BossPatterns.Patterns
             if (attackSound != null && snakeAI != null)
                 snakeAI.PlayTargetSound(attackSound);
 
-            dashCollider.enabled = true;
+            damageTrigger.EnableCollider();
 
             // Рывок к игроку по прямой
             yield return StartCoroutine(MoveToPosition(dashTarget, dashTime, 10f));
 
             if (animator != null)
+            {
+                animator.ResetTrigger("Attack");
                 animator.SetTrigger("Cooldown");
+            }
 
-            if (attackSound != null && snakeAI != null)
-                snakeAI.PlayTargetSound(null);
-
-            dashCollider.enabled = false;
+            damageTrigger.DisableCollider();
 
             // Возврат по дуге
             float returnDuration = 1.5f;

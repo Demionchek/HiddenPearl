@@ -88,6 +88,12 @@ namespace AI.BossPatterns
             isAttacking = false;
         }
 
+        public void ExecuteSingleAttack(AttackPattern pattern, Transform target)
+        {
+            pattern.playerTarget = target;
+            pattern.ExecutePattern();
+        }
+
         public void IncreasePhase()
         {
             if (currentPhase == phases.Length - 1) return;
@@ -104,6 +110,8 @@ namespace AI.BossPatterns
             {
                 // Выбор случайного паттерна из фазы
                 AttackPattern pattern = phase.attackPatterns[Random.Range(0, phase.attackPatterns.Length)];
+
+                pattern.playerTarget = player;
 
                 // Запуск паттерна
                 yield return StartCoroutine(pattern.ExecutePattern());

@@ -15,9 +15,6 @@ namespace AI.BossPatterns
         public Collider2D beamCollider; // Коллайдер луча для обнаружения попаданий
 
         [Header("Beam Settings")]
-        public float beamShrinkDuration = 0.5f;
-        public float beamStartDelay = 0.2f;
-        public int beamDamage = 5;
         public float damageInterval = 0.1f; // Интервал между нанесением урона
 
         private Animator animator;

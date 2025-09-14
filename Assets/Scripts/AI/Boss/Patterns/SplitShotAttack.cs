@@ -51,6 +51,10 @@ namespace AI.Boss.Patterns
             {
                 Vector2 fireDirection = CalculateSpreadDirection(i);
                 GameObject projectile = _pool.Get();
+                if (i == 0)
+                {
+                    projectile.GetComponent<AudioSource>().Play();
+                }
                 projectile.transform.position = firePoints[i].position;
                 Projectile proj = projectile.GetComponent<Projectile>();
                 if (proj != null)
@@ -84,8 +88,12 @@ namespace AI.Boss.Patterns
 
         protected override IEnumerator OnCooldown()
         {
+
             if (animator != null)
+            {
+                animator.ResetTrigger("Attack");
                 animator.SetTrigger("Reload");
+            }
 
             yield return new WaitForSeconds(cooldownTime);
         }
