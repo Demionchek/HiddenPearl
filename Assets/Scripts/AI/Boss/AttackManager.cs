@@ -91,7 +91,7 @@ namespace AI.BossPatterns
         public void ExecuteSingleAttack(AttackPattern pattern, Transform target)
         {
             pattern.playerTarget = target;
-            pattern.ExecutePattern();
+            StartCoroutine(pattern.ExecutePattern());
         }
 
         public void IncreasePhase()

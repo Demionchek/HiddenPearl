@@ -25,13 +25,13 @@ public class TimelineManager : MonoBehaviour
     private int _currentCutsceneIndex = 0;
     private float _skipHoldTimer = 0f;
     private bool _isHoldingSkip = false;
-    private bool _isPlayingSequence = false;
+    public bool _isPlayingSequence = false;
 
     private void Start()
     {
         if (_playOnStart && _cutscenes.Length > 0)
         {
-            _cameraController.SwitchVirtualCamera(false);
+            //_cameraController.SwitchVirtualCamera(false);
             PlayCutsceneSequence();
         }
     }
@@ -87,7 +87,7 @@ public class TimelineManager : MonoBehaviour
         if (_cutscenes.Length == 0)
             return;
 
-        _isPlayingSequence = true;
+        //_isPlayingSequence = true;
         PlayCutscene(0);
     }
 

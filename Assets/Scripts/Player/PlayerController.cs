@@ -47,6 +47,8 @@ namespace Player
         private CheckPoints checkPoints;
         [Inject]
         private CameraController cameraController;
+        [Inject]
+        private TimelineManager timelineManager;
 
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
@@ -122,7 +124,7 @@ namespace Player
 
         private void FixedUpdate()
         {
-            if (isDead || dialogueSystem.isDialogRunning || animController.isRolling)
+            if (isDead || dialogueSystem.isDialogRunning || animController.isRolling || timelineManager.IsCutscenePlaying())
                 return;
 
             if (isSwimming)
