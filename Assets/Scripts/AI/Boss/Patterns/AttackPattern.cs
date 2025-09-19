@@ -29,6 +29,8 @@ namespace AI.BossPatterns.Patterns
             animator = anim;
         }
 
+        public virtual void DisableExtras(){}
+
         public IEnumerator ExecutePattern()
         {
             if (isExecuting) yield break;

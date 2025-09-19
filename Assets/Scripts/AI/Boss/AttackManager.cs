@@ -1,6 +1,8 @@
 using System.Collections;
 using AI.BossPatterns.Patterns;
+using Player;
 using UnityEngine;
+using Zenject;
 
 namespace AI.BossPatterns
 {
@@ -32,6 +34,9 @@ namespace AI.BossPatterns
         private bool isAttacking = false;
         private Coroutine attackCoroutine;
 
+        [Inject]
+        private PlayerController playerController;
+
         void Start()
         {
             rb = GetComponent<Rigidbody2D>();
@@ -40,15 +45,19 @@ namespace AI.BossPatterns
 
             bossHealthBar.OnDeath += InitDeath;
             bossHealthBar.OnHit += IncreasePhase;
+            playerController.OnDeath += InterruptAttacks;
+            playerController.OnRevive += StartAttacks;
         }
 
         private void InitDeath()
         {
             InterruptAttacks();
+            snakeAI.PlayDeath();
         }
 
         public void StartAttacks()
         {
+            currentPhase = 0;
             if (!isAttacking)
             {
                 attackCoroutine = StartCoroutine(AttackCycle());
@@ -137,6 +146,7 @@ namespace AI.BossPatterns
                 foreach (AttackPattern pattern in phase.attackPatterns)
                 {
                     pattern.StopAllCoroutines();
+                    pattern.DisableExtras();
                 }
             }
 

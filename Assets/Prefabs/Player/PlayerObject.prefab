@@ -457,7 +457,7 @@ MonoBehaviour:
   attackPlayerSound: {fileID: 9209431881281644947}
   hitPlayerSound: {fileID: 4965538142887147751}
   jumpPlayerSound: {fileID: 569887102807863641}
-  doubleJumpPlayerSound: {fileID: 0}
+  doubleJumpPlayerSound: {fileID: 6314355107293706888}
   deathPlayerSound: {fileID: 4259944272942709419}
 --- !u!114 &8138380478024111344
 MonoBehaviour:

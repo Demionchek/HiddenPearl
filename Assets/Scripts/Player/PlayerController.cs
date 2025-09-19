@@ -5,6 +5,7 @@ using Camera;
 using DefaultNamespace;
 using Interfaces;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace Player
@@ -38,6 +39,7 @@ namespace Player
         [SerializeField] private RandomSoundPlayer jumpPlayerSound;
         [SerializeField] private RandomSoundPlayer doubleJumpPlayerSound;
         [SerializeField] private RandomSoundPlayer deathPlayerSound;
+        [SerializeField] private Image fadeScreen;
 
         [Inject]
         private InputHandler inputHandler;
@@ -97,6 +99,8 @@ namespace Player
         public static PlayerController Instance { get; private set; }
 
         public event Action OnRevive;
+        public event Action OnDeath;
+
         public Action<bool> hasDive { get; set; }
 
         private void Awake()
@@ -450,13 +454,34 @@ namespace Player
 
         private IEnumerator ReviveCoroutine()
         {
-            yield return new WaitForSeconds(3f);
+            OnDeath?.Invoke();
+
+            fadeScreen.gameObject.SetActive(true);
+            while (fadeScreen.color.a < 1f)
+            {
+                var color = fadeScreen.color;
+                color.a = color.a + 0.05f;
+                fadeScreen.color = color;
+                yield return new WaitForSeconds(0.2f);
+            }
+
+            yield return new WaitForSeconds(1f);
 
             isDead = false;
             transform.position = checkPoints.CurrentCheckPoint.position;
             animController.SetTrigger(AnimationController.REVIVE_S);
             SetHealth(MaxHealth);
             healthChanged?.Invoke(Health);
+
+            while (fadeScreen.color.a > 0f)
+            {
+                var color = fadeScreen.color;
+                color.a = color.a - 0.05f;
+                fadeScreen.color = color;
+                yield return new WaitForSeconds(0.2f);
+            }
+
+            fadeScreen.gameObject.SetActive(false);
 
             OnRevive?.Invoke();
         }

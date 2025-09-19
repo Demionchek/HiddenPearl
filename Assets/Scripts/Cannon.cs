@@ -20,16 +20,16 @@ public class Cannon : MonoBehaviour, IHittable
     [Header("Audio")]
     public AudioClip chargingSound;
     public AudioClip fireSound;
+    [SerializeField] private AudioSource shotSource;
+    [SerializeField] private AudioSource chargeSource;
 
     private float currentCharge = 0f;
     private bool isPlayerNear = false;
     private bool isCharging = false;
     private bool isFullyCharged = false;
-    private AudioSource audioSource;
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
         chargeFillImage.fillAmount = 0f;
         attackSign.SetActive(false);
     }
@@ -93,18 +93,24 @@ public class Cannon : MonoBehaviour, IHittable
         isCharging = true;
         if (chargingSound != null)
         {
-            audioSource.PlayOneShot(chargingSound);
+            if (chargeSource.clip != chargingSound)
+            {
+                chargeSource.clip = chargingSound;
+                chargeSource.loop = true;
+            }
+            chargeSource.Play();
         }
     }
 
     private void StopCharging()
     {
         isCharging = false;
+        chargeSource.Pause();
     }
 
     private void CompleteCharging()
     {
-        isCharging = false;
+        StopCharging();
         isFullyCharged = true;
         currentCharge = maxChargeTime;
         chargeFillImage.fillAmount = 1f;
@@ -119,7 +125,8 @@ public class Cannon : MonoBehaviour, IHittable
 
             if (fireSound != null)
             {
-                audioSource.PlayOneShot(fireSound);
+                shotSource.PlayOneShot(fireSound);
+                shotSource.loop = false;
             }
 
             ResetCannon();

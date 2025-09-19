@@ -1,6 +1,10 @@
 using System.Collections;
 using AI.BossPatterns.Patterns;
+using DG.Tweening;
+using Player;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using Zenject;
 
 namespace AI.BossPatterns
 {
@@ -18,11 +22,19 @@ namespace AI.BossPatterns
         public Transform timelineTarget;
         public AttackPattern timeLinePattern;
         public GameObject healthPrefab;
+        public AudioClip deathSound;
+        public GameObject clouds1Prefab;
+        public GameObject clouds2Prefab;
+        public GameObject rainPrefab;
+        public Light2D light2D;
 
         private Rigidbody2D rb;
         private AttackManager attackManager;
         private AudioSource audioSource;
         private bool inCombat = true; // Всегда в режиме боя
+
+        [Inject]
+        private PlayerController playerController;
 
         void Start()
         {
@@ -35,22 +47,51 @@ namespace AI.BossPatterns
 
             healthPrefab.SetActive(false);
 
+            playerController.OnDeath += ReturnHome;
             //StartAttackPattern();
         }
 
-        public void PlayTargetSound(AudioClip clip)
+        private void ReturnHome() => StartCoroutine(MoveToPosition(defaultCombatPosition.position, 1f));
+
+        public void PlayTargetSound(AudioClip clip, bool loop = false)
         {
             if (clip == null) audioSource.Stop();
+            audioSource.clip = clip;
+            audioSource.Play();
+            audioSource.loop = loop;
+        }
 
-            audioSource.PlayOneShot(clip);
+        public void StopTargetSound()
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
         }
 
         public void PlayDeath()
         {
             Animator animator = GetComponent<Animator>();
             animator.SetTrigger("Roar");
+            audioSource.PlayOneShot(deathSound);
             Vector2 targetPostition = transform.position - Vector3.up * 5;
-            MoveToPosition(targetPostition, 5);
+            StartCoroutine(MoveToPosition(targetPostition, 5));
+            StartCoroutine(OnDeathCoroutine());
+        }
+
+        private IEnumerator OnDeathCoroutine()
+        {
+            yield return new WaitForSeconds(3f);
+            healthPrefab.SetActive(false);
+            rainPrefab.SetActive(false);
+            Vector3 clouds1Pos = clouds1Prefab.transform.position - Vector3.left * 5;
+            Vector3 clouds2Pos = clouds2Prefab.transform.position - Vector3.right * 5;
+            clouds1Prefab.transform.DOMove(clouds1Pos, 2f);
+            clouds2Prefab.transform.DOMove(clouds2Pos, 2f);
+            while (light2D.intensity < 1f)
+            {
+                light2D.intensity += 0.05f;
+                yield return new WaitForSeconds(0.2f);
+            }
+            Debug.Log("LoadLevel 3");
         }
 
         public void TimeLineAttackExecute()

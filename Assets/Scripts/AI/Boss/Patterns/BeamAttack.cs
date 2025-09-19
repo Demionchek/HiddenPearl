@@ -34,6 +34,11 @@ namespace AI.Boss.Patterns
         {
             animator.SetTrigger("Attack");
 
+            if (attackSound != null && snakeAI != null)
+            {
+                snakeAI.PlayTargetSound(attackSound);
+            }
+
             // Создаем луч
             currentBeam.SetActive(true);
             BeamController beam = currentBeam.GetComponent<BeamController>();
@@ -71,6 +76,16 @@ namespace AI.Boss.Patterns
 
             if (animator != null)
                 animator.SetTrigger("Cooldown");
+
+            if (attackSound != null && snakeAI != null)
+            {
+                snakeAI.StopTargetSound();
+            }
+        }
+
+        public override void DisableExtras()
+        {
+            currentBeam.SetActive(false);
         }
     }
 }

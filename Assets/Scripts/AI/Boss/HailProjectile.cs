@@ -10,10 +10,13 @@ namespace AI.BossPatterns
         private Vector2 targetPosition;
         private GameObjectPool _pool;
 
+        bool hasHit = false;
+
         public void Initialize(Vector2 target, GameObjectPool pool)
         {
             targetPosition = target;
             _pool = pool;
+            hasHit = false;
         }
 
         void Update()
@@ -28,8 +31,11 @@ namespace AI.BossPatterns
 
         void OnTriggerEnter2D(Collider2D other)
         {
+            if (hasHit) return;
+
             if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
+                hasHit = true;
                 other.GetComponent<IHittable>().Hit();
                 _pool.Return(gameObject);
             }
