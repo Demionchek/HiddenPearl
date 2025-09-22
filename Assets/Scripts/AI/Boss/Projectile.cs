@@ -24,6 +24,8 @@ namespace AI.BossPatterns
         private Vector2 perpendicularDirection;
         private float initialAngle;
 
+        private bool hasHit = false;
+
         private GameObjectPool _pool;
 
         public void Initialize(Vector2 moveDirection, float moveSpeed, GameObjectPool pool)
@@ -41,10 +43,12 @@ namespace AI.BossPatterns
 
             spawnTime = Time.time;
 
-            StartCoroutine(ReternToPoolCoroutine());
+            hasHit = false;
+
+            StartCoroutine(ReturnToPoolCoroutine());
         }
 
-        private IEnumerator ReternToPoolCoroutine()
+        private IEnumerator ReturnToPoolCoroutine()
         {
             yield return new WaitForSeconds(lifetime);
             _pool.Return(gameObject);
@@ -81,23 +85,9 @@ namespace AI.BossPatterns
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
+                hasHit = true;
                 other.GetComponent<IHittable>().Hit();
-                Destroy(gameObject);
-            }
-        }
-
-        // Визуализация в редакторе
-        void OnDrawGizmosSelected()
-        {
-            if (Application.isPlaying)
-            {
-                // Показываем направление движения и амплитуду волны
-                Gizmos.color = Color.green;
-                Gizmos.DrawRay(transform.position, direction * 2f);
-
-                Gizmos.color = Color.blue;
-                Gizmos.DrawRay(transform.position, perpendicularDirection * waveAmplitude);
-                Gizmos.DrawRay(transform.position, -perpendicularDirection * waveAmplitude);
+                _pool.Return(gameObject);
             }
         }
     }

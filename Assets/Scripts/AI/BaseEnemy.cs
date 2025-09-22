@@ -108,13 +108,13 @@ namespace AI
             Health = health;
             healthChanged?.Invoke(health);
         }
-        
+
         public void IncreaseHealth(int amount)
         {
             MaxHealth += amount;
             SetHealth(MaxHealth);
         }
-        
+
         public void Hit()
         {
             if (isDead) return;
@@ -131,6 +131,10 @@ namespace AI
                 ChangeState<DeathState>();
                 OnDeath?.Invoke(this);
             }
+        }
+
+        public void Kill()
+        {
         }
 
         public virtual void ActivateSpecial(bool isActive) { }
@@ -286,7 +290,7 @@ namespace AI
         {
             if (createdStates == null) createdStates = new List<BaseStateAI>();
             if (createdStates.Count == 0) return new T();
-            
+
             //check if state has been created
             for (int i = 0; i < createdStates.Count; i++)
             {

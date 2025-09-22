@@ -3,7 +3,7 @@ using Object = UnityEngine.Object;
 
 namespace ObjectPool {
     public class GameObjectPool : PoolBase<GameObject>{
-        public GameObjectPool(GameObject gameObject, int preloadCount) 
+        public GameObjectPool(GameObject gameObject, int preloadCount)
             : base (() => Preload(gameObject), GetAction, ReturnAction, preloadCount)
             { }
 

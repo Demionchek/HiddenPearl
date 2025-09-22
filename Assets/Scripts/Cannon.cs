@@ -168,4 +168,9 @@ public class Cannon : MonoBehaviour, IHittable
             FireCannon();
         }
     }
+
+    public void Kill()
+    {
+        throw new System.NotImplementedException();
+    }
 }

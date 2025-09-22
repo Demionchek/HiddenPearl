@@ -5,6 +5,7 @@ using Camera;
 using DefaultNamespace;
 using Interfaces;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
@@ -19,7 +20,8 @@ namespace Player
         [SerializeField] private float rollForce = 1.5f;
         [SerializeField] private float interactDelay = 0.5f;
         [SerializeField] private Vector2 groundColliderSize;
-		[SerializeField] private Vector2 groundColliderOffset;
+        [SerializeField] private Vector2 groundColliderOffset;
+        public float wallDetectOffset = 0.1f;
 
         [Header("Swimming Settings")]
         [SerializeField] private float swimSpeed = 3f;
@@ -27,10 +29,15 @@ namespace Player
         [SerializeField] private float waterSurfaceLevelOffset = 3.5f;
         [SerializeField] private LayerMask waterLayer;
         [SerializeField] private Vector2 swimColliderSize;
-		[SerializeField] private Vector2 swimColliderOffset;
+        [SerializeField] private Vector2 swimColliderOffset;
 
+        [Header("Climbing Settings")]
+        [SerializeField] private float climbSpeed = 2f;
+        [SerializeField] private Vector2 climbColliderSize;
+        [SerializeField] private Vector2 climbColliderOffset;
 
         [Header("Other Settings")]
+        [SerializeField] private bool reloadLevelOnDeath = false;
         [SerializeField] private int Health;
         [SerializeField] private int MaxHealth;
         [SerializeField] private OxygenController oxygenController;
@@ -43,33 +50,39 @@ namespace Player
 
         [Inject]
         private InputHandler inputHandler;
+
         [Inject]
         private DialogueSystem dialogueSystem;
+
         [Inject]
         private CheckPoints checkPoints;
+
         [Inject]
         private CameraController cameraController;
+
         [Inject]
         private TimelineManager timelineManager;
 
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
-        private BoxCollider2D  boxTriggerCollider;
+        private BoxCollider2D boxTriggerCollider;
         private PlayerAnimationController animController;
         private Collider2D waterCollider;
+        private Collider2D climbCollider;
 
         private int currentAttackIndex = -1;
-
-        public bool isDead {get; private set;}
+        public bool isDead { get; private set; }
         private bool isFlip = false;
         private bool isDoubleJumping = false;
         private bool isRolling = false;
+        private bool isClimbing = false;
         public Action<int> healthChanged { get; set; }
 
         public int GetHealth()
         {
             return Health;
         }
+
         public int GetMaxHealth()
         {
             return MaxHealth;
@@ -118,12 +131,12 @@ namespace Player
             isFlip = animController.IsSpriteFliped();
             UpdateAnimationParameters();
 
-            if (animController.isAttacking ||
-                isDead || dialogueSystem.isDialogRunning || animController.isRolling) return;
+            if (animController.isAttacking || isDead || dialogueSystem.isDialogRunning || animController.isRolling) return;
 
             HandleAttack();
             HandleJump();
             HandleRoll();
+            HandleClimb();
         }
 
         private void FixedUpdate()
@@ -131,10 +144,15 @@ namespace Player
             if (isDead || dialogueSystem.isDialogRunning || animController.isRolling || timelineManager.IsCutscenePlaying())
                 return;
 
-            if (isSwimming)
+            if (isClimbing)
+            {
+                HandleClimbingMovement();
+            }
+            else if (isSwimming)
             {
                 HandleSwimmingMovement();
-            } else
+            }
+            else
             {
                 HandleGroundMovement();
             }
@@ -144,70 +162,159 @@ namespace Player
         {
             CurrentSpeed = speed;
 
-            // Проверяем, есть ли стена перед игроком в направлении движения
             bool isWallInFront = false;
+            bool isSteepSlope = false;
+
             if (Mathf.Abs(inputHandler.MoveInput.x) > 0.1f)
             {
                 float direction = Mathf.Sign(inputHandler.MoveInput.x);
-                float rayLength = capsuleCollider.size.x * 0.75f;
-                Vector2 rayOrigin = (Vector2)transform.position + capsuleCollider.offset;
 
-                float rayHeight = capsuleCollider.size.y * 0.4f;
+                Vector2 capsuleSize = new Vector2(
+                    capsuleCollider.size.x * 0.3f,
+                    capsuleCollider.size.y * 0.7f
+                );
 
-                RaycastHit2D hitLower = Physics2D.Raycast(
-                    rayOrigin + Vector2.up * (capsuleCollider.offset.y - rayHeight * 1.75f),
+                Vector2 capsuleOffset = new Vector2(
+                    direction * (capsuleCollider.size.x * 0.5f + capsuleSize.x * 0.5f),
+                    capsuleCollider.offset.y
+                );
+
+                Vector2 capsulePosition = (Vector2)transform.position + capsuleOffset;
+
+                RaycastHit2D capsuleHit = Physics2D.CapsuleCast(
+                    capsulePosition,
+                    capsuleSize,
+                    CapsuleDirection2D.Vertical,
+                    0f,
                     Vector2.right * direction,
-                    rayLength,
-                    LayerMask.GetMask("Ground", "Wall", "Platform", "Enemy"));
+                    0.1f,
+                    LayerMask.GetMask("Ground", "Wall", "Platform", "Enemy")
+                );
 
-                isWallInFront = hitLower.collider != null;
+                if (capsuleHit.collider != null)
+                {
+                    float surfaceAngle = Vector2.Angle(capsuleHit.normal, Vector2.up);
+                    float playerBottom = transform.position.y + capsuleCollider.offset.y - capsuleCollider.size.y * 0.5f;
+                    float surfaceHeight = capsuleHit.point.y;
+                    float heightDifference = surfaceHeight - playerBottom;
+                    float maxAllowedHeight = capsuleCollider.size.y * 0.25f;
 
-                Debug.DrawRay(rayOrigin + Vector2.up * (capsuleCollider.offset.y - rayHeight * 1.75f),
-                             Vector2.right * direction * rayLength, Color.red);
+                    if (surfaceAngle <= 46f && heightDifference <= maxAllowedHeight)
+                    {
+                        isWallInFront = false;
+                    }
+                    else if (surfaceAngle > 46f || heightDifference > maxAllowedHeight)
+                    {
+                        isWallInFront = true;
+                        isSteepSlope = surfaceAngle > 46f;
+                    }
+
+                    Debug.Log($"Surface angle: {surfaceAngle}°, Height diff: {heightDifference}, Allowed: {maxAllowedHeight}");
+                }
+
+                DrawDebugCapsule(capsulePosition, capsuleSize, CapsuleDirection2D.Vertical,
+                    isWallInFront ? Color.red : Color.yellow);
             }
 
-            // Если есть стена перед нами, не применяем горизонтальное движение, но оставляем возможность прыжка
             float horizontalVelocity = isWallInFront ? 0 : inputHandler.MoveInput.x * CurrentSpeed;
             rb.linearVelocity = new Vector2(horizontalVelocity, rb.linearVelocity.y) + effectorVelocity;
+        }
+
+        private void DrawDebugCapsule(Vector2 position, Vector2 size, CapsuleDirection2D direction, Color color)
+        {
+            float halfWidth = size.x * 0.5f;
+            float halfHeight = size.y * 0.5f;
+
+            Vector2 topLeft = position + new Vector2(-halfWidth, halfHeight);
+            Vector2 topRight = position + new Vector2(halfWidth, halfHeight);
+            Vector2 bottomLeft = position + new Vector2(-halfWidth, -halfHeight);
+            Vector2 bottomRight = position + new Vector2(halfWidth, -halfHeight);
+
+            Debug.DrawLine(topLeft, topRight, color);
+            Debug.DrawLine(topRight, bottomRight, color);
+            Debug.DrawLine(bottomRight, bottomLeft, color);
+            Debug.DrawLine(bottomLeft, topLeft, color);
         }
 
         private void HandleSwimmingMovement()
         {
             CurrentSpeed = swimSpeed;
 
-            // Проверяем, достигли ли мы поверхности воды
             bool atWaterSurface = transform.position.y >= GetWaterSurfaceLevel() - waterSurfaceLevelOffset;
 
-            // Сохраняем предыдущее состояние перед изменением
             _previousIsDiving = isDiving;
             isDiving = !atWaterSurface;
 
-            // Проверяем изменение состояния и вызываем событие
             if (_previousIsDiving != isDiving)
             {
                 hasDive?.Invoke(isDiving);
             }
 
-            // Ограничиваем движение вверх у поверхности воды
             float verticalInput = atWaterSurface && inputHandler.MoveInput.y > 0 ? 0 : inputHandler.MoveInput.y;
 
             Vector2 swimDirection = new Vector2(inputHandler.MoveInput.x, verticalInput).normalized;
 
             SwitchColliderSwimming(swimDirection.x > 0.1f);
 
-            // Добавляем силу движения
             rb.AddForce(swimDirection * swimSpeed, ForceMode2D.Force);
 
-            // Ограничиваем максимальную скорость
             rb.linearVelocity = new Vector2(
                 Mathf.Clamp(rb.linearVelocity.x, -swimSpeed, swimSpeed),
                 Mathf.Clamp(rb.linearVelocity.y, -swimSpeed, swimSpeed)
             );
 
-            // Если мы у поверхности и стоим на земле, проверяем возможность выхода
             if (atWaterSurface && IsGrounded)
             {
                 CheckWaterExit();
+            }
+        }
+
+        private void HandleClimbingMovement()
+        {
+            CurrentSpeed = climbSpeed;
+
+            Vector2 climbDirection = new Vector2(inputHandler.MoveInput.x, inputHandler.MoveInput.y).normalized;
+
+            //SwitchColliderClimbing(climbDirection.x > 0.1f);
+
+            rb.AddForce(climbDirection * climbSpeed, ForceMode2D.Force);
+            rb.linearVelocity = new Vector2(
+                Mathf.Clamp(rb.linearVelocity.x, -climbSpeed, climbSpeed),
+                Mathf.Clamp(rb.linearVelocity.y, -climbSpeed, climbSpeed)
+            );
+
+            if (inputHandler.MoveInput.magnitude < 0.1f) rb.linearVelocity = Vector2.zero;
+
+            float climbSurfaceLevel = climbCollider.bounds.max.y;
+            if (transform.position.y >= climbSurfaceLevel - capsuleCollider.size.y && inputHandler.MoveInput.y > 0)
+            {
+                animController.SetTrigger("Pullup");
+                rb.linearVelocity = Vector2.zero;
+            }
+
+            if (IsGrounded)
+            {
+                ExitClimbing();
+            }
+        }
+
+        private void SwitchColliderClimbing(bool isMovingHorizontally)
+        {
+            if (isMovingHorizontally)
+            {
+                capsuleCollider.direction = CapsuleDirection2D.Horizontal;
+                capsuleCollider.size = climbColliderSize;
+                capsuleCollider.offset = climbColliderOffset;
+                boxTriggerCollider.size = climbColliderSize;
+                boxTriggerCollider.offset = climbColliderOffset;
+            }
+            else
+            {
+                capsuleCollider.direction = CapsuleDirection2D.Vertical;
+                capsuleCollider.size = groundColliderSize;
+                capsuleCollider.offset = groundColliderOffset;
+                boxTriggerCollider.size = groundColliderSize;
+                boxTriggerCollider.offset = groundColliderOffset;
             }
         }
 
@@ -238,7 +345,6 @@ namespace Player
 
         private void CheckWaterExit()
         {
-            // Проверяем, есть ли земля над нами, чтобы выйти из воды
             RaycastHit2D hit = Physics2D.Raycast(
                 transform.position,
                 Vector2.up,
@@ -253,25 +359,53 @@ namespace Player
 
         private void HandleJump()
         {
-            if (isSwimming) return;
+            if (isSwimming || isClimbing) return;
 
             if (inputHandler.JumpPressed && (IsGrounded || !isDoubleJumping))
             {
-               animController.SetTrigger("Jump");
-               rb.linearVelocity = Vector2.zero;
-               rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
-               isDoubleJumping = !isDoubleJumping;
+                animController.SetTrigger("Jump");
+                rb.linearVelocity = Vector2.zero;
+                rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+                isDoubleJumping = !isDoubleJumping;
 
-               if (!isDoubleJumping)
-               {
-                   if(jumpPlayerSound != null)
-                       jumpPlayerSound.PlayRandomSoundNow();
-               } else
-               {
-                   if(doubleJumpPlayerSound != null)
-                       doubleJumpPlayerSound.PlayRandomSoundNow();
-               }
+                if (!isDoubleJumping)
+                {
+                    if (jumpPlayerSound != null)
+                        jumpPlayerSound.PlayRandomSoundNow();
+                }
+                else
+                {
+                    if (doubleJumpPlayerSound != null)
+                        doubleJumpPlayerSound.PlayRandomSoundNow();
+                }
             }
+        }
+
+        private void HandleClimb()
+        {
+            if (isSwimming || isDead || dialogueSystem.isDialogRunning || animController.isRolling) return;
+
+            if (inputHandler.MoveInput.y > 0.1f && climbCollider != null && !isClimbing)
+            {
+                EnterClimbing();
+            }
+        }
+
+        private void EnterClimbing()
+        {
+            isClimbing = true;
+            rb.gravityScale = 0;
+            rb.linearDamping = 5f;
+            animController.SetBool("isClimbing", true);
+        }
+
+        private void ExitClimbing()
+        {
+            isClimbing = false;
+            rb.gravityScale = 1;
+            rb.linearDamping = 0;
+            animController.SetBool("isClimbing", false);
+            //SwitchColliderClimbing(false);
         }
 
         private void EnterWater()
@@ -286,6 +420,7 @@ namespace Player
             {
                 yield return new WaitForEndOfFrame();
             }
+
             isSwimming = true;
             rb.linearDamping = 5f;
             animController.SetBool("isSwimming", true);
@@ -321,12 +456,14 @@ namespace Player
                 if (rb.linearVelocity.magnitude > 0.1f)
                 {
                     animController.SetInt(AnimationController.ATTACK_S, 3);
-                } else
+                }
+                else
                 {
                     int attackIndex = currentAttackIndex == 1 ? 2 : 1;
                     animController.SetInt(AnimationController.ATTACK_S, attackIndex);
                     currentAttackIndex = attackIndex;
                 }
+
                 animController.isAttacking = true;
 
                 StartCoroutine(PlayAttackSoundWithDelay());
@@ -335,12 +472,11 @@ namespace Player
 
         private void HandleRoll()
         {
-            if (inputHandler.DodgeAction && !animController.isRolling && IsGrounded && !isSwimming)
+            if (inputHandler.DodgeAction && !animController.isRolling && IsGrounded && !isSwimming && !isClimbing)
             {
                 animController.isRolling = true;
 
                 StartCoroutine(RollCoroutine());
-
             }
         }
 
@@ -363,7 +499,7 @@ namespace Player
             Vector2 origin = transform.position + new Vector3(0, 0.15f, 0);
             float radius = 0.2f;
             float distance = 0.02f;
-            Vector2 direction = (isFlip ? new Vector2(-0.1f,0) : new Vector2(0.1f,0));
+            Vector2 direction = (isFlip ? new Vector2(-0.1f, 0) : new Vector2(0.1f, 0));
             origin += direction;
 
             Collider2D[] hitColliders = Physics2D.OverlapCircleAll(origin, radius);
@@ -373,7 +509,6 @@ namespace Player
                 Debug.Log("В радиусе нет объектов.");
                 return;
             }
-
 
             foreach (Collider2D collider in hitColliders)
             {
@@ -401,13 +536,12 @@ namespace Player
                 attackPlayerSound.PlayRandomSoundNow();
         }
 
-        // Отрисовка радиуса в редакторе
         private void OnDrawGizmos()
         {
             Vector2 origin = transform.position + new Vector3(0, 0.15f, 0);
             float radius = 0.2f;
             float distance = 0.02f;
-            Vector2 direction = (isFlip ? new Vector2(-0.25f,0) : new Vector2(0.25f,0));
+            Vector2 direction = (isFlip ? new Vector2(-0.25f, 0) : new Vector2(0.25f, 0));
             origin += direction;
 
             Gizmos.color = Color.cyan;
@@ -416,12 +550,11 @@ namespace Player
 
         private void UpdateAnimationParameters()
         {
-            if(dialogueSystem.isDialogRunning) {
-                animController.SetMovementParameters(
-                0,
-                IsGrounded);
+            if (dialogueSystem.isDialogRunning)
+            {
+                animController.SetMovementParameters(0, IsGrounded);
                 return;
-            };
+            }
 
             animController.SetMovementParameters(
                 Mathf.Abs(inputHandler.MoveInput.x),
@@ -440,16 +573,51 @@ namespace Player
                 animController.SetTrigger(AnimationController.IS_DEAD_S);
                 isDead = true;
                 rb.gravityScale = 1;
-
-                StartCoroutine(ReviveCoroutine());
-
                 if (deathPlayerSound != null)
                     deathPlayerSound.PlayRandomSoundNow();
-            } else
+
+                if (reloadLevelOnDeath)
+                {
+                    StartCoroutine(ReloadLevel());
+                } else
+                {
+                    StartCoroutine(ReviveCoroutine());
+                }
+            }
+            else
             {
                 if (hitPlayerSound != null)
                     hitPlayerSound.PlayRandomSoundNow();
             }
+        }
+
+        public void Kill()
+        {
+            SetHealth(0);
+            animController.SetTrigger(AnimationController.IS_DEAD_S);
+            isDead = true;
+            rb.gravityScale = 1;
+
+            if (deathPlayerSound != null)
+                deathPlayerSound.PlayRandomSoundNow();
+
+            StartCoroutine(ReloadLevel());
+        }
+
+        public void PullUp()
+        {
+            if (climbCollider != null)
+            {
+                transform.position = new Vector3(transform.position.x, climbCollider.bounds.max.y + capsuleCollider.size.y * 0.5f, transform.position.z);
+                ExitClimbing();
+            }
+        }
+
+        private IEnumerator ReloadLevel()
+        {
+            yield return new WaitForSeconds(2f);
+            int index = SceneManager.GetActiveScene().buildIndex;
+            SceneManager.LoadScene(index);
         }
 
         private IEnumerator ReviveCoroutine()
@@ -494,9 +662,14 @@ namespace Player
                 {
                     IsGrounded = true;
                     isDoubleJumping = false;
+                    if (isClimbing)
+                    {
+                        ExitClimbing();
+                    }
                     return;
                 }
             }
+
             IsGrounded = false;
         }
 
@@ -516,6 +689,11 @@ namespace Player
             {
                 waterCollider = other;
                 EnterWater();
+            }
+
+            if (other.gameObject.layer == LayerMask.NameToLayer("Climb"))
+            {
+                climbCollider = other;
             }
 
             if (other.gameObject.layer == LayerMask.NameToLayer("Hide"))
@@ -548,6 +726,15 @@ namespace Player
             {
                 ExitWater();
                 cameraController.SwitchVolumeWeight(0);
+            }
+
+            if (other.gameObject.layer == LayerMask.NameToLayer("Climb"))
+            {
+                climbCollider = null;
+                if (isClimbing)
+                {
+                    ExitClimbing();
+                }
             }
 
             if (other.gameObject.layer == LayerMask.NameToLayer("Hide"))

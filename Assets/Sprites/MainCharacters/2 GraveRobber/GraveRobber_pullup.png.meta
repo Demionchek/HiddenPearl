@@ -131,12 +131,12 @@ TextureImporter:
       name: GraveRobber_pullup_0
       rect:
         serializedVersion: 2
-        x: 3
-        y: 9
-        width: 20
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 4
+        y: 10
+        width: 18
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.92886364}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -153,12 +153,12 @@ TextureImporter:
       name: GraveRobber_pullup_1
       rect:
         serializedVersion: 2
-        x: 54
-        y: 17
-        width: 19
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 55
+        y: 10
+        width: 17
+        height: 39
+      alignment: 9
+      pivot: {x: 0.5, y: 0.7548512}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -175,12 +175,12 @@ TextureImporter:
       name: GraveRobber_pullup_2
       rect:
         serializedVersion: 2
-        x: 102
-        y: 20
-        width: 25
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 103
+        y: 10
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.7359799}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -197,12 +197,12 @@ TextureImporter:
       name: GraveRobber_pullup_3
       rect:
         serializedVersion: 2
-        x: 149
-        y: 24
-        width: 27
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 150
+        y: 10
+        width: 25
+        height: 46
+      alignment: 9
+      pivot: {x: 0.5, y: 0.62143236}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -219,12 +219,12 @@ TextureImporter:
       name: GraveRobber_pullup_4
       rect:
         serializedVersion: 2
-        x: 202
-        y: 29
-        width: 23
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 203
+        y: 30
+        width: 21
+        height: 31
+      alignment: 9
+      pivot: {x: 0.5, y: 0.28938502}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -241,12 +241,12 @@ TextureImporter:
       name: GraveRobber_pullup_5
       rect:
         serializedVersion: 2
-        x: 252
-        y: 35
-        width: 25
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 253
+        y: 36
+        width: 23
+        height: 27
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -263,7 +263,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6f298b26a255727408afbaf4dad1a434
     internalID: 0
     vertices: []
     indices: 
@@ -271,7 +271,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       GraveRobber_pullup_0: 5979131873698237255
       GraveRobber_pullup_1: -8791202334833743810
