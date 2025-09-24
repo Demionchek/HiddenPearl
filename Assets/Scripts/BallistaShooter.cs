@@ -15,11 +15,13 @@ namespace DefaultNamespace
          [SerializeField] private float arrowSpeed = 2f;
          private GameObjectPool pool;
          private Animator animator;
+         private AudioSource audioSource;
 
          private void Start()
          {
              pool = new GameObjectPool(projectile, 5);
              animator = GetComponent<Animator>();
+             audioSource = GetComponent<AudioSource>();
              StartCoroutine(ShootWithDelay());
          }
 
@@ -41,6 +43,7 @@ namespace DefaultNamespace
              arrow.transform.position = firePoint.position;
              Projectile projectileScript = arrow.GetComponent<Projectile>();
              projectileScript.Initialize(-Vector2.right, arrowSpeed, pool);
+             audioSource.Play();
          }
     }
 }

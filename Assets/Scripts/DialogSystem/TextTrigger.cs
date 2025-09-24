@@ -20,10 +20,10 @@ namespace DialogSystem
         [SerializeField] private int checkPointIndex = 1;
 
         private Coroutine displayCoroutine;
-        
+
         [Inject]
         CheckPoints  checkPoints;
-        
+
         private bool AreAllOpenersActive()
         {
             foreach (var opener in openers)
@@ -33,7 +33,7 @@ namespace DialogSystem
             }
             return true;
         }
-        
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Player")) // Проверяем, что вошёл игрок
@@ -44,7 +44,8 @@ namespace DialogSystem
                     StopCoroutine(displayCoroutine);
                 }
                 displayCoroutine = StartCoroutine(DisplayText());
-                checkPoints.SetCurrentCheckpoint(1);
+
+                if (isCheckPoint) checkPoints.SetCurrentCheckpoint(checkPointIndex);
             }
         }
 
@@ -64,7 +65,7 @@ namespace DialogSystem
         private IEnumerator DisplayText()
         {
             textDisplay.text = ""; // Очищаем текст перед началом
-            
+
             string textToDisplay = changeTextWithTrigger && AreAllOpenersActive() ? triggerText : baseText;
 
             // Постепенно выводим текст посимвольно

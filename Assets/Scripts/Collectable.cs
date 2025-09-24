@@ -1,6 +1,7 @@
 using System;
 using AI;
 using Interfaces;
+using Player;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Zenject;
@@ -19,10 +20,28 @@ namespace DefaultNamespace
         [Inject]
         private DialogueSystem dialogueSystem;
 
+        [Inject]
+        private PlayerController playerController;
+
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
             audioSource = GetComponent<AudioSource>();
+
+            playerController.OnRevive += OnRevive;
+        }
+
+        private void OnDestroy()
+        {
+            playerController.OnRevive -= OnRevive;
+        }
+
+        private void OnRevive()
+        {
+            isActive = false;
+            spriteRenderer.enabled = true;
+            if (TryGetComponent(out Light2D light2D)) light2D.enabled = true;
+
         }
 
         private void OnTriggerEnter2D(Collider2D other)

@@ -49,6 +49,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: afac9f7e8376da64185c9f52a6ede1c3, type: 3}
   - {fileID: 8300000, guid: ebb926cb768f511488a288d9a2252c3e, type: 3}
   audioSource: {fileID: 9197048069466158785}
+  cooldownDuration: 1
+  doNotInterrupt: 0
 --- !u!1 &1946747103879363604
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,6 +180,55 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &2832582358650914909
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8875875923996673328}
+  - component: {fileID: 4432775614797687266}
+  m_Layer: 3
+  m_Name: WaterOut
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8875875923996673328
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2832582358650914909}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9128745979972590720}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4432775614797687266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2832582358650914909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e213ccc1b054432490166d1e34cffe2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundClips:
+  - {fileID: 8300000, guid: c1d2b2a6d286b834dbdb81c2f0589f65, type: 3}
+  audioSource: {fileID: 9197048069466158785}
+  cooldownDuration: 0.5
+  doNotInterrupt: 1
 --- !u!1 &2987376101297755894
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,6 +273,8 @@ Transform:
   - {fileID: 2709361277323822587}
   - {fileID: 5053883332561929979}
   - {fileID: 822356292574969594}
+  - {fileID: 4743959238890334086}
+  - {fileID: 8875875923996673328}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &448497847852466353
@@ -443,6 +496,7 @@ MonoBehaviour:
   interactDelay: 0.5
   groundColliderSize: {x: 0.216, y: 0.326}
   groundColliderOffset: {x: 0.0174, y: 0.175}
+  wallDetectOffset: 0.1
   swimSpeed: 3
   swimUpForce: 1
   waterSurfaceLevelOffset: 0.35
@@ -451,6 +505,10 @@ MonoBehaviour:
     m_Bits: 16
   swimColliderSize: {x: 0.42, y: 0.22}
   swimColliderOffset: {x: 0.0174, y: 0.15}
+  climbSpeed: 2
+  climbColliderSize: {x: 0, y: 0}
+  climbColliderOffset: {x: 0, y: 0}
+  reloadLevelOnDeath: 0
   Health: 3
   MaxHealth: 3
   oxygenController: {fileID: 5285789566787568750}
@@ -459,6 +517,9 @@ MonoBehaviour:
   jumpPlayerSound: {fileID: 569887102807863641}
   doubleJumpPlayerSound: {fileID: 6314355107293706888}
   deathPlayerSound: {fileID: 4259944272942709419}
+  WaterInPlayerSound: {fileID: 1753296006828150264}
+  WaterOutPlayerSound: {fileID: 4432775614797687266}
+  fadeScreen: {fileID: 0}
 --- !u!114 &8138380478024111344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561,6 +622,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 05520cfd55343064eb994d4dc5754afc, type: 3}
   - {fileID: 8300000, guid: d67b286559f1edb4194def74ffd9e74f, type: 3}
   audioSource: {fileID: 9197048069466158785}
+  cooldownDuration: 1
+  doNotInterrupt: 0
 --- !u!1 &4782919007236888391
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,6 +672,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: df72689f35d2406499d2860c3a8e73c4, type: 3}
   - {fileID: 8300000, guid: 1236938896506044b8ad8febaec21ed2, type: 3}
   audioSource: {fileID: 9197048069466158785}
+  cooldownDuration: 1
+  doNotInterrupt: 0
 --- !u!1 &6478267494477240104
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,6 +722,57 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b52e25ca94e150f4198f112e08f7230c, type: 3}
   - {fileID: 8300000, guid: 6a9723e0dc307364895cd68b497d8450, type: 3}
   audioSource: {fileID: 9197048069466158785}
+  cooldownDuration: 1
+  doNotInterrupt: 0
+--- !u!1 &6906600809882647739
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4743959238890334086}
+  - component: {fileID: 1753296006828150264}
+  m_Layer: 3
+  m_Name: waterIn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4743959238890334086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6906600809882647739}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9128745979972590720}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1753296006828150264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6906600809882647739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e213ccc1b054432490166d1e34cffe2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundClips:
+  - {fileID: 8300000, guid: db2782bbf6ee4ff44b55fc7fd4d5fe59, type: 3}
+  audioSource: {fileID: 9197048069466158785}
+  cooldownDuration: 0.5
+  doNotInterrupt: 1
 --- !u!1 &8335682639674307233
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,13 +818,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundClips:
-  - {fileID: 8300000, guid: f17a8df33d3309e42b93c2bac5fc70f6, type: 3}
-  - {fileID: 8300000, guid: 6ad0531cea5f9234890d9353ddf181dd, type: 3}
-  - {fileID: 8300000, guid: 70dafb19a93d39244b8f7fb13e091c6f, type: 3}
-  - {fileID: 8300000, guid: e0339dbcd07f340409f11fa3fbbd89f0, type: 3}
-  - {fileID: 8300000, guid: 990e115459453b048931c6abe42728aa, type: 3}
-  - {fileID: 8300000, guid: eea34e08cb50ca5468edc89705793ae4, type: 3}
+  - {fileID: 8300000, guid: 8e2923bc25b831f429f815c984d692a9, type: 3}
+  - {fileID: 8300000, guid: 98fd48346a2624c40a3c049a73cc0abc, type: 3}
+  - {fileID: 8300000, guid: aaaae722f5481804dbc21733370be3be, type: 3}
+  - {fileID: 8300000, guid: 299b0f96c58b1614497ab98df305e333, type: 3}
+  - {fileID: 8300000, guid: 24d04873caa5d9f4aab33ba4bdcd7f30, type: 3}
   audioSource: {fileID: 9197048069466158785}
+  cooldownDuration: 1
+  doNotInterrupt: 0
 --- !u!1001 &2783280938409139928
 PrefabInstance:
   m_ObjectHideFlags: 0

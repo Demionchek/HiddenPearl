@@ -10,10 +10,16 @@ namespace DefaultNamespace
         [SerializeField] private Image bar;
 
         private IHealth health;
+        private Image parentBar;
+
+        private int MaxHealth;
 
         private void Start()
         {
             health = target.GetComponent<IHealth>();
+            MaxHealth = health.GetMaxHealth();
+
+            parentBar = bar.transform.parent.GetComponent<Image>();
 
             if (health == null)
             {
@@ -27,7 +33,17 @@ namespace DefaultNamespace
 
         private void OnHealthChanged(int value)
         {
+            if (value == MaxHealth)
+            {
+                bar.enabled = true;
+                parentBar.enabled = true;
+            }
             bar.fillAmount = (float)value / (float)health.GetMaxHealth();
+            if (value == 0)
+            {
+                bar.enabled = false;
+                parentBar.enabled = false;
+            }
         }
     }
 }

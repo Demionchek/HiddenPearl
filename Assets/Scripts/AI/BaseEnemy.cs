@@ -29,6 +29,7 @@ namespace AI
 
         [Space(5)]
         [Header("Spotting")]
+        public bool IgnoreEverything = false;
         [SerializeField] private float sightRange = 2f;
         [SerializeField] private float sightAngle = 90f;
         [SerializeField] private float checkFrequency = 0.2f;
@@ -37,6 +38,7 @@ namespace AI
         [SerializeField] public float attackDelay = 2f;
         [SerializeField] public float attackHoldSec = 0.3f;
         [HideInInspector] public bool canSeeTarget = false;
+
 
         [Space(5)]
         [Header("Patroll")]
@@ -71,9 +73,9 @@ namespace AI
         [SerializeField] public AIState overrideAIState;
 
         [Header("Audio")]
-        [SerializeField] protected AudioSource audioSource;
-        [SerializeField] protected AudioClip attackSound;
-        [SerializeField] protected AudioClip deathSound;
+        [SerializeField] public RandomSoundPlayer randomAttack;
+        [SerializeField] public RandomSoundPlayer randomDeath;
+        [SerializeField] public RandomSoundPlayer randomHit;
 
         [HideInInspector] public float currentAttackTime = 0f;
         [HideInInspector] public float lastAttackTime = 0f;
@@ -122,6 +124,7 @@ namespace AI
             SetHealth(Health - 1);
 
             healthChanged?.Invoke(Health);
+            randomHit.PlayRandomSoundNow();
 
             SetPlayerAsTarget();
 
@@ -130,6 +133,8 @@ namespace AI
                 isDead = true;
                 ChangeState<DeathState>();
                 OnDeath?.Invoke(this);
+                randomDeath.PlayRandomSoundNow();
+
             }
         }
 
@@ -144,6 +149,9 @@ namespace AI
             while (true)
             {
                 yield return new WaitForSeconds(checkFrequency);
+
+                if (IgnoreEverything) continue;
+
                 DetectTarget();
 
                 if (canSeeTarget)
@@ -245,7 +253,6 @@ namespace AI
         public void Revive()
         {
             SetHealth(MaxHealth);
-            ChangeState<IdleStateAI>();
             capsule.enabled = true;
             if(!isDead) return;
             isDead = false;
@@ -255,6 +262,8 @@ namespace AI
             }
             AnimationController.SetAnimatorTrigger("Revive");
         }
+
+        public void DoNothing() => ChangeState<DoNothing>();
 
         #region State switch and creation
 

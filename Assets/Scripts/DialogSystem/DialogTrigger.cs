@@ -10,6 +10,8 @@ namespace DialogSystem
     public class DialogTrigger : MonoBehaviour
     {
         public int dialogIndex = 0;
+        public bool isCheckpoint = false;
+        public int checkPointIndex = 0;
 
         private BoxCollider2D boxCollider2D;
 
@@ -17,16 +19,18 @@ namespace DialogSystem
         private DialogueSystem dialogueSystem;
         [Inject]
         private PlayerController playerController;
+        [Inject]
+        private CheckPoints checkPoints;
 
         private void Awake()
         {
             boxCollider2D = GetComponent<BoxCollider2D>();
-            playerController.OnRevive += EnableCollider;
+            //playerController.OnRevive += EnableCollider;
         }
 
         private void OnDestroy()
         {
-            playerController.OnRevive -= EnableCollider;
+            //playerController.OnRevive -= EnableCollider;
         }
 
         private void EnableCollider()
@@ -40,6 +44,7 @@ namespace DialogSystem
             {
                 dialogueSystem.InitDialogue(dialogIndex);
                 gameObject.SetActive(false);
+                if (isCheckpoint) checkPoints.SetCurrentCheckpoint(checkPointIndex);
             }
         }
     }

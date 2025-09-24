@@ -18,11 +18,13 @@ namespace DefaultNamespace
 
         private Animator animator;
         private Rigidbody2D rigidbody2D;
+        private AudioSource audioSource;
 
         private void Start()
         {
             animator = GetComponent<Animator>();
             rigidbody2D = GetComponent<Rigidbody2D>();
+            audioSource = GetComponent<AudioSource>();
         }
 
         public void Trigger()
@@ -57,6 +59,8 @@ namespace DefaultNamespace
             }
 
             if (destroyOnTrigger) Destroy(gameObject);
+
+            if (collision.relativeVelocity.magnitude > 0.5f && audioSource != null) audioSource.Play();
         }
     }
 }

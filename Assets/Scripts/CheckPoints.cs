@@ -11,7 +11,7 @@ namespace DefaultNamespace
 
         public Transform CurrentCheckPoint { get; private set; }
 
-        private void Awake()
+        private void Start()
         {
             CurrentCheckPoint = _checkPoints[startCheckPoint];
         }

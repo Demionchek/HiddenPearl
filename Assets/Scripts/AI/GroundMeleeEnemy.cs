@@ -21,6 +21,10 @@ namespace AI
 
         private void Update()
         {
+            if (currState is DoNothing) return;
+
+            if (IgnoreEverything) return;
+
             if (AnimationController.isAttacking || isDead) return;
 
             bool isAttackState = currState is AttackStateAI;
@@ -88,18 +92,7 @@ namespace AI
                 }
             }
 
-            if (attackSound != null)
-                PlaySound(attackSound);
-        }
-
-        private void PlaySound(AudioClip clip)
-        {
-            audioSource?.PlayOneShot(clip);
-        }
-
-        public void PlayAttackSound()
-        {
-            audioSource?.PlayOneShot(attackSound);
+            randomAttack.PlayRandomSoundNow();
         }
 
         private void OnDrawGizmos()

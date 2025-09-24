@@ -15,10 +15,10 @@ namespace AI
     {
         [Header("Enemy References")]
         [SerializeField] private List<GameObject> enemyPool = new List<GameObject>();
-        
+
         [Header("Enemy Patroll Points")]
         [SerializeField] private List<Transform> patrollPoints = new List<Transform>();
-        
+
         [Header("Enemy Spawn Points")]
         [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
 
@@ -34,13 +34,14 @@ namespace AI
         private Coroutine activationCoroutine;
         private int enemiesActivatedCount = 0;
         private bool allEnemiesActivated = false;
+        private int enemiesToKill;
 
         // Событие для оповещения об уничтожении всех врагов
         public System.Action OnAllEnemiesEliminated;
-        
+
         [Inject]
         PlayerController playerController;
-        
+
         [Inject]
         DialogueSystem dialogSystem;
 
@@ -58,8 +59,11 @@ namespace AI
                 if (enemy != null)
                 {
                     enemy.SetActive(false);
+
                 }
             }
+
+            enemiesToKill = enemyPool.Count;
 
             if (autoStartActivation)
             {
@@ -136,6 +140,11 @@ namespace AI
                 baseEnemy.Init();
                 baseEnemy.OnDeath += HandleEnemyDeath;
             }
+
+            if (allEnemiesActivated && activeEnemies.Count == 0)
+            {
+                baseEnemy.DoNothing();
+            }
         }
 
         private void HandleEnemyDeath(BaseEnemy baseEnemy)
@@ -143,18 +152,16 @@ namespace AI
             // Удаляем из списка активных врагов
             activeEnemies.Remove(baseEnemy.gameObject);
 
-            // TODO: Счетчик смертей
+            enemiesToKill--;
 
             // Проверяем, все ли враги уничтожены и все ли были активированы
-            if (allEnemiesActivated && activeEnemies.Count == 0)
+            if (enemiesToKill == 0)
             {
                 AllEnemiesEliminated();
                 foreach (GameObject enemyObj in enemyPool)
                 {
                     BaseEnemy enemy = enemyObj.GetComponent<BaseEnemy>();
-                    enemy.Revive();
-                    enemy.loopOverrideState = true;
-                    enemy.overrideAIState = AIState.idle;
+                    enemy.DoNothing();
                 }
             }
         }
@@ -162,10 +169,12 @@ namespace AI
         private void AllEnemiesEliminated()
         {
             Debug.Log("Все враги уничтожены!");
-            
+
             // Вызываем событие
             OnAllEnemiesEliminated?.Invoke();
-            
+
+            StopAllCoroutines();
+
             dialogSystem.InitDialogue(1);
         }
 
@@ -196,6 +205,7 @@ namespace AI
             dialogTrigger.SetActive(true);
             walls.SetActive(false);
             enemiesActivatedCount = 0;
+            enemiesToKill = enemyPool.Count;
             activeEnemies.Clear();
             foreach (GameObject enemyObj in enemyPool)
             {
@@ -211,7 +221,7 @@ namespace AI
                 enemyObj.SetActive(false);
                 enemyObj.transform.position = spawnPoints[Random.Range(0, spawnPoints.Count)].position;
             }
-            
+
         }
 
         // Метод для деактивации всех врагов
@@ -224,7 +234,7 @@ namespace AI
                 if (enemy != null)
                 {
                     enemy.SetActive(false);
-                    
+
                     // Убираем обработчики событий
                     BaseEnemy baseEnemy = enemy.GetComponent<BaseEnemy>();
                     if (baseEnemy != null)
@@ -257,12 +267,12 @@ namespace AI
             if (enemyPool.Contains(enemyToRemove))
             {
                 enemyPool.Remove(enemyToRemove);
-                
+
                 // Если враг был активен, удаляем его из активного списка
                 if (activeEnemies.Contains(enemyToRemove))
                 {
                     activeEnemies.Remove(enemyToRemove);
-                    
+
                     // Убираем обработчики событий
                     BaseEnemy baseEnemy = enemyToRemove.GetComponent<BaseEnemy>();
                     if (baseEnemy != null)
@@ -302,9 +312,9 @@ namespace AI
         void OnDestroy()
         {
             StopActivation();
-            
+
             playerController.OnRevive -= OnRevivePlayer;
-            
+
             // Убираем все обработчики событий
             foreach (var enemy in enemyPool)
             {

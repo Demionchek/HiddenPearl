@@ -22,6 +22,7 @@ namespace AI
         private SpriteRenderer spriteRenderer;
         private Animator animator;
         private Collider2D collider2D;
+        private AudioSource audioSource;
 
         // State variables
         private bool isAttacking = false;
@@ -39,6 +40,8 @@ namespace AI
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
             collider2D = GetComponent<Collider2D>();
+            audioSource = GetComponent<AudioSource>();
+
         }
 
         private void Update()
@@ -119,6 +122,7 @@ namespace AI
         public void OnAttack()
         {
             StartDash();
+            audioSource.Play();
         }
 
         private void StartDash()

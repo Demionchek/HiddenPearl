@@ -20,22 +20,25 @@ namespace AI
             pool = new GameObjectPool(bulletPrefab, 10);
             StartCoroutine(DetectionRoutine());
             ChangeState<PatrolStateAI>();
-            audioSource = GetComponent<AudioSource>();
         }
 
         private void Update()
         {
             if(isDead) return;
-            
+
+            if (currState is DoNothing) return;
+
+            if (IgnoreEverything) return;
+
             bool isAttackState = currState is AttackStateAI;
-            bool canAttack = target != null && 
+            bool canAttack = target != null &&
                              stoppingDistance > Vector2.Distance(transform.position, target.position);
 
             if (isChasing && canAttack && !isAttackState)
             {
                 ChangeState<AttackStateAI>();
             }
-            
+
             if (isChasing && !canAttack && !AnimationController.isAttacking) ChangeState<ChaseStateAI>();
 
             if (!isChasing)
@@ -48,14 +51,16 @@ namespace AI
         }
         private void FixedUpdate()
         {
+            if (IgnoreEverything) return;
+
             currState?.StateFixedUpdate();
         }
 
         protected override void OnAttack()
         {
             if (target == null) return;
-            
-            
+
+
             GameObject bullet = pool.Get();
             bullet.transform.position = AnimationController.GetSpriteRenderer().flipX ? shootPosLeft.position : shootPosRight.position;
             Vector2 targetPosition = new Vector2(savedHitPosition.x, savedHitPosition.y + 0.25f);
@@ -65,7 +70,7 @@ namespace AI
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             // Поворачиваем объект (для 2D обычно используется ось Z)
             bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            audioSource.Play();
+            randomAttack.PlayRandomSoundNow();
         }
     }
 }

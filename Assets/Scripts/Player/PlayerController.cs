@@ -46,6 +46,8 @@ namespace Player
         [SerializeField] private RandomSoundPlayer jumpPlayerSound;
         [SerializeField] private RandomSoundPlayer doubleJumpPlayerSound;
         [SerializeField] private RandomSoundPlayer deathPlayerSound;
+        [SerializeField] private RandomSoundPlayer WaterInPlayerSound;
+        [SerializeField] private RandomSoundPlayer WaterOutPlayerSound;
         [SerializeField] private Image fadeScreen;
 
         [Inject]
@@ -123,6 +125,21 @@ namespace Player
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             boxTriggerCollider = GetComponent<BoxCollider2D>();
             animController = GetComponent<PlayerAnimationController>();
+            int currentHealth = PlayerPrefs.GetInt("Health");
+            if (SceneManager.GetActiveScene().buildIndex != 1)
+                MaxHealth = PlayerPrefs.GetInt("Health");
+            else
+            {
+                 PlayerPrefs.SetInt("Health", 3);
+                 currentHealth = PlayerPrefs.GetInt("Health");
+                 MaxHealth = 3;
+            }
+            Debug.Log("Health: " + currentHealth);
+
+            PlayerPrefs.Save();
+
+            if (MaxHealth > 5) MaxHealth = 5;
+
             SetHealth(MaxHealth);
         }
 
@@ -208,8 +225,6 @@ namespace Player
                         isWallInFront = true;
                         isSteepSlope = surfaceAngle > 46f;
                     }
-
-                    Debug.Log($"Surface angle: {surfaceAngle}°, Height diff: {heightDifference}, Allowed: {maxAllowedHeight}");
                 }
 
                 DrawDebugCapsule(capsulePosition, capsuleSize, CapsuleDirection2D.Vertical,
@@ -428,6 +443,8 @@ namespace Player
 
             if (!isDiving)
             {
+                WaterInPlayerSound.PlayRandomSoundNow();
+
                 isDiving = true;
                 hasDive?.Invoke(true);
             }
@@ -441,6 +458,8 @@ namespace Player
             animController.SetBool("isSwimming", false);
 
             SwitchColliderSwimming(false);
+
+            WaterOutPlayerSound.PlayRandomSoundNow();
 
             if (isDiving)
             {
@@ -711,11 +730,16 @@ namespace Player
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Water"))
             {
-                bool atWaterSurface = transform.position.y <= GetWaterSurfaceLevel();
+                bool atWaterSurface = transform.position.y >= GetWaterSurfaceLevel() - waterSurfaceLevelOffset;
 
-                if (!isSwimming && !atWaterSurface)
+                if (isSwimming && atWaterSurface)
                 {
                     rb.gravityScale = 0.5f;
+                }
+
+                if (!atWaterSurface)
+                {
+                    EnterWater();
                 }
             }
         }

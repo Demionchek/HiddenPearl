@@ -4,6 +4,7 @@ using DG.Tweening;
 using Player;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace AI.BossPatterns
@@ -91,7 +92,8 @@ namespace AI.BossPatterns
                 light2D.intensity += 0.05f;
                 yield return new WaitForSeconds(0.2f);
             }
-            Debug.Log("LoadLevel 3");
+
+            SceneManager.LoadScene(3);
         }
 
         public void TimeLineAttackExecute()
