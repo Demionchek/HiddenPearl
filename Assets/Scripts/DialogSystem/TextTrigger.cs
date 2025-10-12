@@ -57,21 +57,21 @@ namespace DialogSystem
                 {
                     StopCoroutine(displayCoroutine);
                 }
-                textDisplay.text = ""; // Очищаем текст
+                if (textDisplay != null) textDisplay.text = ""; // Очищаем текст
                 textPanel.SetActive(false); // Выключаем панель
             }
         }
 
         private IEnumerator DisplayText()
         {
-            textDisplay.text = ""; // Очищаем текст перед началом
+            if (textDisplay != null) textDisplay.text = ""; // Очищаем текст перед началом
 
             string textToDisplay = changeTextWithTrigger && AreAllOpenersActive() ? triggerText : baseText;
 
             // Постепенно выводим текст посимвольно
             foreach (char letter in textToDisplay.ToCharArray())
             {
-                textDisplay.text += letter;
+                if (textDisplay != null) textDisplay.text += letter;
                 yield return new WaitForSeconds(displaySpeed);
             }
         }

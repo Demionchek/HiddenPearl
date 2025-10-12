@@ -11057,7 +11057,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2406992749507461194, guid: 9ebdd227594542a4497eea67b7cdd6f7, type: 3}
       propertyPath: 'dialogLines.Array.data[3].lines.Array.data[1]'
-      value: I know it was long way, but your jorney is only about to start...
+      value: I know it was long way, but your jorney is only about to begin...
       objectReference: {fileID: 0}
     - target: {fileID: 4956632580849835145, guid: 9ebdd227594542a4497eea67b7cdd6f7, type: 3}
       propertyPath: m_Name
@@ -12311,7 +12311,7 @@ Tilemap:
       - {fileID: 21300000, guid: a1219cf1460e017428610aea6a61d1ee, type: 3}
       - {fileID: 21300000, guid: 5c1111ced077af549ae935778ca4c958, type: 3}
       - {fileID: 21300000, guid: 2786abf3bce66544cb58f1bede7b7168, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_Flags: 0
   - first: {x: -17, y: -4, z: 0}
@@ -12341,7 +12341,7 @@ Tilemap:
       - {fileID: 21300000, guid: a1219cf1460e017428610aea6a61d1ee, type: 3}
       - {fileID: 21300000, guid: 5c1111ced077af549ae935778ca4c958, type: 3}
       - {fileID: 21300000, guid: 2786abf3bce66544cb58f1bede7b7168, type: 3}
-      m_AnimationSpeed: 5
+      m_AnimationSpeed: 5.0000005
       m_AnimationTimeOffset: 0
       m_Flags: 0
   - first: {x: -14, y: -4, z: 0}
