@@ -201,27 +201,33 @@ namespace AI
 
         private void OnRevivePlayer()
         {
+            DeactivateAllEnemies();
+
             StopActivation();
             dialogTrigger.SetActive(true);
             walls.SetActive(false);
-            enemiesActivatedCount = 0;
-            enemiesToKill = enemyPool.Count;
-            activeEnemies.Clear();
+
+            // Сначала отписываемся от всех событий смерти
             foreach (GameObject enemyObj in enemyPool)
             {
-                try
+                if (enemyObj != null)
                 {
                     BaseEnemy enemy = enemyObj.GetComponent<BaseEnemy>();
-                    enemy.Revive();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
+                    if (enemy != null)
+                    {
+                        enemy.OnDeath -= HandleEnemyDeath; // Ключевая строка!
+                        enemy.Revive();
+                    }
                 }
                 enemyObj.SetActive(false);
                 enemyObj.transform.position = spawnPoints[Random.Range(0, spawnPoints.Count)].position;
             }
 
+            // Теперь безопасно сбрасываем счётчики
+            activeEnemies.Clear();
+            enemiesActivatedCount = 0;
+            enemiesToKill = enemyPool.Count; // Теперь это корректно
+            allEnemiesActivated = false;
         }
 
         // Метод для деактивации всех врагов

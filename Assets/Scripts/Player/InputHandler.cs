@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,11 +10,13 @@ namespace Player
         public bool JumpPressed { get; private set; }
         public bool AttackPressed { get; private set; }
         public bool DodgeAction { get; private set; }
+        public bool DuckAction { get; private set; }
 
         private InputAction moveAction;
         private InputAction jumpAction;
         private InputAction attackAction;
         private InputAction dodgeAction;
+        private InputAction duckAction;
 
         private void Awake()
         {
@@ -23,11 +26,14 @@ namespace Player
             jumpAction = playerInput.actions["Jump"];
             attackAction = playerInput.actions["Attack"];
             dodgeAction = playerInput.actions["Dodge"];
+            duckAction = playerInput.actions["Duck"];
         }
 
         private void Update()
         {
             MoveInput = moveAction.ReadValue<Vector2>();
+            DuckAction = duckAction.IsPressed();
+            Debug.Log(DuckAction);
         }
 
         private void LateUpdate()
@@ -37,6 +43,7 @@ namespace Player
             AttackPressed = false;
             DodgeAction = false;
         }
+
 
         private void OnJump(InputValue context)
         {

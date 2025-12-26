@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Animations;
 using Camera;
 using DefaultNamespace;
@@ -110,6 +111,7 @@ namespace Player
 
         private Vector2 effectorVelocity = Vector2.zero;
         private bool isSwimming;
+        private bool isDucking;
 
         public static PlayerController Instance { get; private set; }
 
@@ -154,6 +156,25 @@ namespace Player
             HandleJump();
             HandleRoll();
             HandleClimb();
+            HandleDuck();
+        }
+
+        private void HandleDuck()
+        {
+            if (inputHandler.DuckAction)
+            {
+                List<Collider2D> allContacts = new List<Collider2D>();
+                rb.GetContacts(allContacts);
+
+                foreach (var collider in allContacts)
+                {
+                    if (collider?.gameObject.layer == LayerMask.NameToLayer("Ladder"))
+                    {
+                        collider.enabled = false;
+                        StartCoroutine(ReenableCollider(collider));
+                    }
+                }
+            }
         }
 
         private void FixedUpdate()
@@ -223,7 +244,9 @@ namespace Player
                     else if (surfaceAngle > 46f || heightDifference > maxAllowedHeight)
                     {
                         isWallInFront = true;
-                        isSteepSlope = surfaceAngle > 46f;
+
+                        if (capsuleHit.collider.gameObject.layer != LayerMask.NameToLayer("Enemy"))
+                            isSteepSlope = surfaceAngle > 30f;
                     }
                 }
 
@@ -232,7 +255,14 @@ namespace Player
             }
 
             float horizontalVelocity = isWallInFront ? 0 : inputHandler.MoveInput.x * CurrentSpeed;
-            rb.linearVelocity = new Vector2(horizontalVelocity, rb.linearVelocity.y) + effectorVelocity;
+            float verticalVelocity = isSteepSlope ? rb.linearVelocity.y + Math.Abs(inputHandler.MoveInput.x): rb.linearVelocity.y;
+            rb.linearVelocity = new Vector2(horizontalVelocity, verticalVelocity) + effectorVelocity;
+        }
+
+        private IEnumerator ReenableCollider(Collider2D collider)
+        {
+            yield return new WaitForSeconds(0.5f);
+            collider.enabled = true;
         }
 
         private void DrawDebugCapsule(Vector2 position, Vector2 size, CapsuleDirection2D direction, Color color)

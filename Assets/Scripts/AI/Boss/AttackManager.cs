@@ -34,6 +34,10 @@ namespace AI.BossPatterns
         private bool isAttacking = false;
         private Coroutine attackCoroutine;
 
+        private AttackPattern lastPattern;
+        private int consecutiveCount = 0; // сколько раз подряд был использован lastPattern
+        private const int MAX_CONSECUTIVE = 2;
+
         [Inject]
         private PlayerController playerController;
 
@@ -117,8 +121,33 @@ namespace AI.BossPatterns
 
             for (int i = 0; i < attackCount; i++)
             {
-                // Выбор случайного паттерна из фазы
-                AttackPattern pattern = phase.attackPatterns[Random.Range(0, phase.attackPatterns.Length)];
+                AttackPattern pattern;
+                int attempts = 0;
+                const int MAX_ATTEMPTS = 20;
+
+                do
+                {
+                    pattern = phase.attackPatterns[Random.Range(0, phase.attackPatterns.Length)];
+                    attempts++;
+
+                    if (pattern != lastPattern || consecutiveCount < MAX_CONSECUTIVE)
+                    {
+                        break;
+                    }
+                }
+                while (attempts < MAX_ATTEMPTS);
+
+                // Обновляем счётчик повторений
+                if (pattern == lastPattern)
+                {
+                    consecutiveCount++;
+                }
+                else
+                {
+                    consecutiveCount = 1;
+                }
+
+                lastPattern = pattern;
 
                 pattern.playerTarget = player;
 
@@ -131,6 +160,9 @@ namespace AI.BossPatterns
                     yield return new WaitForSeconds(timeBetweenAttacks);
                 }
             }
+
+            consecutiveCount = 0;
+            lastPattern = null;
         }
 
         public void InterruptAttacks()
