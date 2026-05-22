@@ -11,12 +11,18 @@ namespace DefaultNamespace.DependencyInjection
 
         public override void InstallBindings()
         {
-            Container.Bind<TimelineManager>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<PlayerController>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<CameraController>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<InputHandler>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<DialogueSystem>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<CheckPoints>().FromComponentInHierarchy().AsSingle();
+            if (FindAnyObjectByType<TimelineManager>() != null)
+                Container.Bind<TimelineManager>().FromComponentInHierarchy().AsSingle();
+            if (FindAnyObjectByType<PlayerController>() != null)
+                Container.Bind<PlayerController>().FromComponentInHierarchy().AsSingle();
+            if (FindAnyObjectByType<CameraController>() != null)
+                Container.Bind<CameraController>().FromComponentInHierarchy().AsSingle();
+            if (FindAnyObjectByType<InputHandler>() != null)
+                Container.Bind<InputHandler>().FromComponentInHierarchy().AsSingle();
+            if (FindAnyObjectByType<DialogueSystem>() != null)
+                Container.Bind<DialogueSystem>().FromComponentInHierarchy().AsSingle();
+            if (FindAnyObjectByType<CheckPoints>() != null)
+                Container.Bind<CheckPoints>().FromComponentInHierarchy().AsSingle();
         }
     }
 }

@@ -29,6 +29,9 @@ namespace AI.BossPatterns
         public GameObject rainPrefab;
         public Light2D light2D;
 
+        [Header("DeathSettings")]
+        public int sceneToLoad = 4;
+
         private Rigidbody2D rb;
         private AttackManager attackManager;
         private AudioSource audioSource;
@@ -93,7 +96,7 @@ namespace AI.BossPatterns
                 yield return new WaitForSeconds(0.2f);
             }
 
-            SceneManager.LoadScene(3);
+            SceneManager.LoadScene(sceneToLoad);
         }
 
         public void TimeLineAttackExecute()

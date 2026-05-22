@@ -33,7 +33,6 @@ namespace Player
         {
             MoveInput = moveAction.ReadValue<Vector2>();
             DuckAction = duckAction.IsPressed();
-            Debug.Log(DuckAction);
         }
 
         private void LateUpdate()

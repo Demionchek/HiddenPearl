@@ -12,10 +12,41 @@ namespace AI
     {
         [Header("GroundEnemySettings")]
         public float attackDistance = 0.3f;
+        [SerializeField] private bool waitForBehaviorStart = false;
+
+        private bool behaviorStarted;
 
         private void Start()
         {
             Init();
+            
+            if (waitForBehaviorStart)
+            {
+                DoNothing();
+                return;
+            }
+            
+            StartBehavior();
+        }
+
+        public void StartBehavior()
+        {
+            if (behaviorStarted || isDead) return;
+            
+            if (AnimationController == null)
+            {
+                Init();
+            }
+            
+            behaviorStarted = true;
+            IgnoreEverything = false;
+            AnimationController.SetAnimatorSpeed(1);
+            
+            if (waitForBehaviorStart)
+            {
+                StartCoroutine(DetectionRoutine());
+            }
+            
             ChangeState<PatrolStateAI>();
         }
 

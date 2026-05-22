@@ -28,21 +28,22 @@ namespace DefaultNamespace
 
     public class DialogueSystem : MonoBehaviour
     {
-        [SerializeField] private GameObject dialoguePanel; // Панель с текстом
-        [SerializeField] private TextMeshProUGUI dialogueText; // Текст для вывода
-        [SerializeField] private float textSpeed = 0.05f; // Скорость появления текста
-        [SerializeField] private float delayAfterLines = 1.5f; // Задержка после последней строки
+        [SerializeField] private GameObject dialoguePanel;
+        [SerializeField] private TextMeshProUGUI dialogueText;
+        [SerializeField] private float textSpeed = 0.05f;
+        [SerializeField] private float delayAfterLines = 1.5f;
 
         [SerializeField] private List<DialogTimelineTrigger> timelineTriggers = new List<DialogTimelineTrigger>();
 
         public bool isDialogRunning = false;
 
-        private List<string> lines = new List<string>(); // Список строк диалога
-        private int currentLine = 0; // Текущая строка
+        private List<DialogueLine> lines = new List<DialogueLine>();
+        private int currentLine = 0;
 
         private LinesContainer linesContainer;
         private DialogType currentType;
         private TMPWriter writer;
+        private bool timelinePausedByDialogue = false;
 
         [Inject]
         private InputHandler _inputHandler;
@@ -53,7 +54,7 @@ namespace DefaultNamespace
         void Start()
         {
             linesContainer = GetComponent<LinesContainer>();
-            InputLines(linesContainer.dialogLines[(int)DialogType.Intro].lines);
+            InputLines(linesContainer.dialogLines[(int)DialogType.Intro].DialogueLines);
 
             writer = dialogueText.gameObject.GetComponent<TMPWriter>();
             if (writer == null)  writer = dialogueText.gameObject.AddComponent<TMPWriter>();
@@ -65,7 +66,7 @@ namespace DefaultNamespace
             currentType = (DialogType)index;
 
             ClearLines();
-            InputLines(linesContainer.dialogLines[index].lines);
+            InputLines(linesContainer.dialogLines[index].DialogueLines);
 
             StartDialogue();
         }
@@ -75,13 +76,15 @@ namespace DefaultNamespace
             lines.Clear();
         }
 
-        private void InputLines(List<string> newLines)
+        private void InputLines(List<DialogueLine> newLines)
         {
             this.lines.AddRange(newLines);
         }
 
         public void StartDialogue()
         {
+            isDialogRunning = true;
+            timelinePausedByDialogue = _timelineManager.PauseCurrentCutscene();
             dialoguePanel.SetActive(true);
             currentLine = 0;
             StartCoroutine(TypeLine());
@@ -89,63 +92,51 @@ namespace DefaultNamespace
 
         IEnumerator TypeLine()
         {
-            isDialogRunning = true;
+            int lineIndex = currentLine;
+            DialogueLine line = lines[lineIndex];
 
-            bool isPlayingCutscene = _timelineManager.IsCutscenePlaying();
+            line.onLineStart?.Invoke();
+            dialogueText.text = line.text;
 
-            if (isPlayingCutscene)
-                if (_timelineManager.GetCutscene() != null)
-                    _timelineManager.GetCutscene().Pause();
-
-            dialogueText.text = lines[currentLine];
-
-            // Сбрасываем состояние нажатия в начале каждой строки
-            // Ждем пока кнопка будет отпущена перед началом новой строки
             yield return new WaitWhile(() => _inputHandler.JumpPressed);
 
-            // Постепенно выводим каждый символ текущей строки
             writer.StartWriter();
 
-            // Ждем пока текст напечатается ИЛИ пока не нажмут прыжок для пропуска
             yield return new WaitUntil(() => writer.IsWriting == false || _inputHandler.JumpPressed);
 
-            // Если текст еще печатался и была нажата кнопка - пропускаем анимацию
             if (writer.IsWriting && _inputHandler.JumpPressed)
             {
                 writer.SkipWriter();
-                // Ждем пока текст полностью не пропустится
                 yield return new WaitUntil(() => writer.IsWriting == false);
+                //line.onLineEnd?.Invoke();
             }
 
             currentLine++;
 
-            // Теперь ждем НОВОГО нажатия для продолжения
-            // Сначала убедимся что кнопка отпущена
             yield return new WaitWhile(() => _inputHandler.JumpPressed);
 
-            // Затем ждем нового нажатия
+
             if (currentLine < lines.Count)
                 yield return new WaitUntil(() => _inputHandler.JumpPressed);
 
-            // Короткая задержка чтобы убедиться что нажатие зарегистрировано
             yield return null;
 
-            // Ждем отпускания кнопки
             yield return new WaitWhile(() => _inputHandler.JumpPressed);
+
+            line.onLineEnd?.Invoke();
 
             if (currentLine < lines.Count)
             {
                 StartCoroutine(TypeLine());
             } else
             {
-                // Для последней строки тоже ждем нового нажатия
                 yield return new WaitWhile(() => _inputHandler.JumpPressed);
                 yield return new WaitUntil(() => _inputHandler.JumpPressed);
                 yield return null;
                 yield return new WaitWhile(() => _inputHandler.JumpPressed);
 
-                if (_timelineManager.IsCutscenePaused())
-                    _timelineManager.GetCutscene().Resume();
+                if (timelinePausedByDialogue)
+                    _timelineManager.ResumeCurrentCutscene();
 
                 EndDialogue();
             }
@@ -155,37 +146,33 @@ namespace DefaultNamespace
         {
             dialoguePanel.SetActive(false);
             isDialogRunning = false;
+            timelinePausedByDialogue = false;
 
-            // Проверяем все триггеры и запускаем соответствующие таймлайны
             foreach (var trigger in timelineTriggers)
             {
                 if (trigger.dialogType == currentType)
                 {
                     _timelineManager.PlayCutscene(trigger.timelineIndex);
-                    break; // Запускаем только первый подходящий триггер
+                    break;
                 }
             }
         }
 
-        // Метод для добавления триггера программно
         public void AddTimelineTrigger(DialogType dialogType, int timelineIndex)
         {
             timelineTriggers.Add(new DialogTimelineTrigger { dialogType = dialogType, timelineIndex = timelineIndex });
         }
 
-        // Метод для удаления триггера
         public void RemoveTimelineTrigger(DialogType dialogType)
         {
             timelineTriggers.RemoveAll(trigger => trigger.dialogType == dialogType);
         }
 
-        // Метод для проверки наличия триггера
         public bool HasTimelineTrigger(DialogType dialogType)
         {
             return timelineTriggers.Exists(trigger => trigger.dialogType == dialogType);
         }
 
-        // Метод для получения индекса таймлайна по типу диалога
         public int GetTimelineIndex(DialogType dialogType)
         {
             var trigger = timelineTriggers.Find(t => t.dialogType == dialogType);

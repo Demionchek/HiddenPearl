@@ -17,8 +17,6 @@ public class TimelineManager : MonoBehaviour
     [Inject]
     private InputHandler _inputHandler;
     [Inject]
-    private PlayerController _player;
-    [Inject]
     private CameraController _cameraController;
 
     private PlayableDirector _currentCutscene;
@@ -45,6 +43,8 @@ public class TimelineManager : MonoBehaviour
     {
         if (_currentCutscene == null || _currentCutscene.state != PlayState.Playing)
             return;
+
+        if (_inputHandler == null) return;
 
         if (_inputHandler.JumpPressed)
         {
@@ -124,7 +124,6 @@ public class TimelineManager : MonoBehaviour
             else
             {
                 _isPlayingSequence = false;
-                _player.gameObject.SetActive(true);
             }
         }
     }
@@ -133,6 +132,21 @@ public class TimelineManager : MonoBehaviour
     public bool IsCutscenePlaying()
     {
         return _currentCutscene != null && _currentCutscene.state == PlayState.Playing;
+    }
+
+    public bool PauseCurrentCutscene()
+    {
+        if (!IsCutscenePlaying())
+            return false;
+
+        _currentCutscene.Pause();
+        return true;
+    }
+
+    public void ResumeCurrentCutscene()
+    {
+        if (IsCutscenePaused())
+            _currentCutscene.Resume();
     }
 
     public bool IsCutscenePaused() => _currentCutscene != null && _currentCutscene.state == PlayState.Paused;

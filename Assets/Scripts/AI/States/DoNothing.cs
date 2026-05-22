@@ -5,7 +5,7 @@ namespace AI.States
         public override void EnterState()
         {
             baseEnemy.IgnoreEverything = true;
-            animatonController.SetAnimatorSpeed(0);
+            //animatonController.SetAnimatorSpeed(0);
             animatonController.StopAllCoroutines();
             baseEnemy.StopAllCoroutines();
         }

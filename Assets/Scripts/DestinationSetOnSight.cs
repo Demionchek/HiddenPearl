@@ -51,6 +51,8 @@ namespace DefaultNamespace
         public bool CanSeeTarget => canSeeTarget;
         public Transform Target => target;
 
+        public event Action<bool> OnTargetSeen;
+
         private void Start()
         {
             aiDestinationSetter = GetComponent<AIDestinationSetter>();
@@ -86,7 +88,7 @@ namespace DefaultNamespace
             {
                 spriteRenderer.flipX = aiPath.velocity.x < 0;
             }
-            
+
             // Handle attack when close to target
             if (canSeeTarget && Time.time >= lastAttackTime + attackCooldown)
             {
@@ -96,7 +98,7 @@ namespace DefaultNamespace
                     animator.SetTrigger(AnimationController.ATTACK_S);
                 }
             }
-            
+
             // Handle patrol progression when not chasing
             if (isChasing || patrolPoints.Length == 0 || isWaiting) return;
 
