@@ -55,7 +55,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -134,12 +134,12 @@ TextureImporter:
       name: GraveRobber_cast_0
       rect:
         serializedVersion: 2
-        x: 8
+        x: 9
         y: 0
-        width: 18
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 16
+        height: 33
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +156,12 @@ TextureImporter:
       name: GraveRobber_cast_1
       rect:
         serializedVersion: 2
-        x: 55
+        x: 56
         y: 0
-        width: 19
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 17
+        height: 33
+      alignment: 9
+      pivot: {x: 0.5328706, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +178,12 @@ TextureImporter:
       name: GraveRobber_cast_2
       rect:
         serializedVersion: 2
-        x: 103
+        x: 104
         y: 0
-        width: 19
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 17
+        height: 33
+      alignment: 9
+      pivot: {x: 0.5370214, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -200,12 +200,12 @@ TextureImporter:
       name: GraveRobber_cast_3
       rect:
         serializedVersion: 2
-        x: 152
+        x: 153
         y: 0
-        width: 32
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 30
+        height: 33
+      alignment: 9
+      pivot: {x: 0.27479705, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -222,12 +222,12 @@ TextureImporter:
       name: GraveRobber_cast_4
       rect:
         serializedVersion: 2
-        x: 200
+        x: 201
         y: 0
-        width: 36
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 34
+        height: 33
+      alignment: 9
+      pivot: {x: 0.24610946, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -244,12 +244,12 @@ TextureImporter:
       name: GraveRobber_cast_5
       rect:
         serializedVersion: 2
-        x: 248
+        x: 249
         y: 0
-        width: 20
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 35
+        height: 33
+      alignment: 9
+      pivot: {x: 0.2291408, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -262,33 +262,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: GraveRobber_cast_6
-      rect:
-        serializedVersion: 2
-        x: 263
-        y: 12
-        width: 22
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 92a621f1e00a1e260800000000000000
-      internalID: 7125152067988122153
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 459c746fecfb9c04fba80d4d88b9131c
     internalID: 0
     vertices: []
     indices: 
@@ -296,7 +274,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       GraveRobber_cast_0: -4331291734234420218
       GraveRobber_cast_1: -2713561671121931779

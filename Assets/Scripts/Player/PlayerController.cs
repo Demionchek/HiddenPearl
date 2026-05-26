@@ -73,6 +73,11 @@ namespace Player
         private Collider2D waterCollider;
         private Collider2D climbCollider;
 
+        private const float MaxWalkableSlopeAngle = 46f;
+        private const float WallCheckDistance = 0.1f;
+        private bool isWallInFront;
+        private bool isSteepSlope;
+
         private int currentAttackIndex = -1;
         public bool isDead { get; private set; }
         private bool isFlip = false;
@@ -200,63 +205,104 @@ namespace Player
         {
             CurrentSpeed = speed;
 
-            bool isWallInFront = false;
-            bool isSteepSlope = false;
+            CheckWallAndSlope();
 
-            if (Mathf.Abs(inputHandler.MoveInput.x) > 0.1f)
+            ApplyMovement();
+        }
+
+        private void CheckWallAndSlope()
+        {
+            isWallInFront = false;
+            isSteepSlope = false;
+
+            float moveX = inputHandler.MoveInput.x;
+
+            if (Mathf.Abs(moveX) < 0.1f)
+                return;
+
+            float direction = Mathf.Sign(moveX);
+
+            Vector2 capsuleSize = new Vector2(
+                capsuleCollider.size.x * 0.3f,
+                capsuleCollider.size.y * 0.7f
+            );
+
+            Vector2 capsuleOffset = new Vector2(
+                direction * (capsuleCollider.size.x * 0.5f + capsuleSize.x * 0.5f),
+                capsuleCollider.offset.y
+            );
+
+            Vector2 capsulePosition = (Vector2)transform.position + capsuleOffset;
+
+            RaycastHit2D hit = Physics2D.CapsuleCast(
+                capsulePosition,
+                capsuleSize,
+                CapsuleDirection2D.Vertical,
+                0f,
+                Vector2.right * direction,
+                WallCheckDistance,
+                LayerMask.GetMask("Ground", "Wall", "Platform", "Enemy")
+            );
+
+            if (hit.collider == null)
             {
-                float direction = Mathf.Sign(inputHandler.MoveInput.x);
-
-                Vector2 capsuleSize = new Vector2(
-                    capsuleCollider.size.x * 0.3f,
-                    capsuleCollider.size.y * 0.7f
-                );
-
-                Vector2 capsuleOffset = new Vector2(
-                    direction * (capsuleCollider.size.x * 0.5f + capsuleSize.x * 0.5f),
-                    capsuleCollider.offset.y
-                );
-
-                Vector2 capsulePosition = (Vector2)transform.position + capsuleOffset;
-
-                RaycastHit2D capsuleHit = Physics2D.CapsuleCast(
+                DrawDebugCapsule(
                     capsulePosition,
                     capsuleSize,
                     CapsuleDirection2D.Vertical,
-                    0f,
-                    Vector2.right * direction,
-                    0.1f,
-                    LayerMask.GetMask("Ground", "Wall", "Platform", "Enemy")
+                    Color.yellow
                 );
 
-                if (capsuleHit.collider != null)
-                {
-                    float surfaceAngle = Vector2.Angle(capsuleHit.normal, Vector2.up);
-                    float playerBottom = transform.position.y + capsuleCollider.offset.y - capsuleCollider.size.y * 0.5f;
-                    float surfaceHeight = capsuleHit.point.y;
-                    float heightDifference = surfaceHeight - playerBottom;
-                    float maxAllowedHeight = capsuleCollider.size.y * 0.25f;
-
-                    if (surfaceAngle <= 46f && heightDifference <= maxAllowedHeight)
-                    {
-                        isWallInFront = false;
-                    }
-                    else if (surfaceAngle > 46f || heightDifference > maxAllowedHeight)
-                    {
-                        isWallInFront = true;
-
-                        if (capsuleHit.collider.gameObject.layer != LayerMask.NameToLayer("Enemy"))
-                            isSteepSlope = surfaceAngle > 30f;
-                    }
-                }
-
-                DrawDebugCapsule(capsulePosition, capsuleSize, CapsuleDirection2D.Vertical,
-                    isWallInFront ? Color.red : Color.yellow);
+                return;
             }
 
-            float horizontalVelocity = isWallInFront ? 0 : inputHandler.MoveInput.x * CurrentSpeed;
-            float verticalVelocity = isSteepSlope ? rb.linearVelocity.y + Math.Abs(inputHandler.MoveInput.x): rb.linearVelocity.y;
-            rb.linearVelocity = new Vector2(horizontalVelocity, verticalVelocity) + effectorVelocity;
+            float surfaceAngle = Vector2.Angle(hit.normal, Vector2.up);
+
+            bool isEnemy = hit.collider.gameObject.layer ==
+                           LayerMask.NameToLayer("Enemy");
+
+            // slope
+            if (surfaceAngle > 0f &&
+                surfaceAngle <= MaxWalkableSlopeAngle)
+            {
+                isSteepSlope = true;
+            }
+
+            // wall
+            if (surfaceAngle > MaxWalkableSlopeAngle)
+            {
+                isWallInFront = true;
+            }
+
+            // enemy should not block movement
+            if (isEnemy)
+            {
+                isWallInFront = false;
+            }
+
+            DrawDebugCapsule(
+                capsulePosition,
+                capsuleSize,
+                CapsuleDirection2D.Vertical,
+                isWallInFront ? Color.red : Color.green
+            );
+        }
+
+        private void ApplyMovement()
+        {
+            float moveX = inputHandler.MoveInput.x;
+
+            float horizontalVelocity =
+                isWallInFront
+                    ? 0f
+                    : moveX * CurrentSpeed;
+
+            Vector2 velocity = rb.linearVelocity;
+
+            velocity.x = horizontalVelocity;
+
+
+            rb.linearVelocity = velocity + effectorVelocity;
         }
 
         private IEnumerator ReenableCollider(Collider2D collider)
