@@ -46,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -125,12 +125,12 @@ TextureImporter:
       name: Levitation_0
       rect:
         serializedVersion: 2
-        x: 8
-        y: 2
-        width: 32
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 9
+        y: 3
+        width: 30
+        height: 11
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -147,12 +147,12 @@ TextureImporter:
       name: Levitation_1
       rect:
         serializedVersion: 2
-        x: 57
-        y: 3
-        width: 30
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 58
+        y: 4
+        width: 28
+        height: 9
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -169,12 +169,12 @@ TextureImporter:
       name: Levitation_2
       rect:
         serializedVersion: 2
-        x: 105
-        y: 2
-        width: 30
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 106
+        y: 3
+        width: 28
+        height: 11
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -191,12 +191,12 @@ TextureImporter:
       name: Levitation_3
       rect:
         serializedVersion: 2
-        x: 152
-        y: 1
-        width: 31
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 153
+        y: 2
+        width: 29
+        height: 13
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -213,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: c249b3083e73f78489ce1b124ed27a61
     internalID: 0
     vertices: []
     indices: 
@@ -221,7 +221,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":1.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":2,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Levitation_0: -8137884348497906727
       Levitation_1: 7274234777008038500

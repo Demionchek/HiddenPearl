@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Camera;
 using Player;
 using UnityEngine;
@@ -10,6 +12,7 @@ public class TimelineManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private bool _playOnStart = true;
     [SerializeField] private float _skipHoldDuration = 3f;
+    [SerializeField] private List<int> _cutscenesAllowMovement;
 
     [Header("Cutscenes")]
     [SerializeField] private PlayableDirector[] _cutscenes;
@@ -25,11 +28,12 @@ public class TimelineManager : MonoBehaviour
     private bool _isHoldingSkip = false;
     public bool _isPlayingSequence = false;
 
+    private double pauseTime = 0;
+
     private void Start()
     {
         if (_playOnStart && _cutscenes.Length > 0)
         {
-            //_cameraController.SwitchVirtualCamera(false);
             PlayCutsceneSequence();
         }
     }
@@ -65,7 +69,6 @@ public class TimelineManager : MonoBehaviour
         }
     }
 
-    // Публичный метод для запуска конкретной катсцены по индексу
     public void PlayCutscene(int index)
     {
         if (index < 0 || index >= _cutscenes.Length)
@@ -81,7 +84,6 @@ public class TimelineManager : MonoBehaviour
         _currentCutscene.Play();
     }
 
-    // Публичный метод для запуска последовательности катсцен
     public void PlayCutsceneSequence()
     {
         if (_cutscenes.Length == 0)
@@ -91,7 +93,6 @@ public class TimelineManager : MonoBehaviour
         PlayCutscene(0);
     }
 
-    // Публичный метод для пропуска текущей катсцены
     public void SkipCurrentCutscene()
     {
         if (_currentCutscene == null)
@@ -101,7 +102,6 @@ public class TimelineManager : MonoBehaviour
         OnCutsceneFinished();
     }
 
-    // Остановка текущей катсцены
     private void StopCurrentCutscene()
     {
         if (_currentCutscene != null && _currentCutscene.state == PlayState.Playing)
@@ -111,7 +111,6 @@ public class TimelineManager : MonoBehaviour
         }
     }
 
-    // Вызывается по окончании катсцены (можно подключить через событие в Timeline)
     public void OnCutsceneFinished()
     {
         if (_isPlayingSequence)
@@ -128,25 +127,34 @@ public class TimelineManager : MonoBehaviour
         }
     }
 
-    // Публичный метод для проверки, играет ли сейчас какая-либо катсцена
     public bool IsCutscenePlaying()
     {
         return _currentCutscene != null && _currentCutscene.state == PlayState.Playing;
     }
 
-    public bool PauseCurrentCutscene()
+    public bool IsCutsceneAllowMovement()
+    {
+        bool isAllowMovement = _cutscenes.Length > 0 && _cutscenesAllowMovement.Contains(_currentCutsceneIndex);
+        return isAllowMovement;
+    }
+
+    public void PauseCurrentCutscene()
     {
         if (!IsCutscenePlaying())
-            return false;
+            return;
 
+        pauseTime = _currentCutscene.time;
         _currentCutscene.Pause();
-        return true;
+        _currentCutscene.time = pauseTime;
     }
 
     public void ResumeCurrentCutscene()
     {
         if (IsCutscenePaused())
+        {
             _currentCutscene.Resume();
+            _currentCutscene.time = pauseTime;
+        }
     }
 
     public bool IsCutscenePaused() => _currentCutscene != null && _currentCutscene.state == PlayState.Paused;

@@ -184,7 +184,7 @@ namespace Player
 
         private void FixedUpdate()
         {
-            if (isDead || dialogueSystem.isDialogRunning || animController.isRolling || timelineManager.IsCutscenePlaying())
+            if (isDead || dialogueSystem.isDialogRunning || animController.isRolling || !timelineManager.IsCutsceneAllowMovement())
                 return;
 
             if (isClimbing)

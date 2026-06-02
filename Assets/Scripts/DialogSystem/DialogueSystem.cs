@@ -84,7 +84,8 @@ namespace DefaultNamespace
         public void StartDialogue()
         {
             isDialogRunning = true;
-            timelinePausedByDialogue = _timelineManager.PauseCurrentCutscene();
+            _timelineManager.PauseCurrentCutscene();
+            timelinePausedByDialogue = true;
             dialoguePanel.SetActive(true);
             currentLine = 0;
             StartCoroutine(TypeLine());
@@ -135,7 +136,7 @@ namespace DefaultNamespace
                 yield return null;
                 yield return new WaitWhile(() => _inputHandler.JumpPressed);
 
-                if (timelinePausedByDialogue)
+                if (timelinePausedByDialogue && !HasTimelineTrigger(currentType))
                     _timelineManager.ResumeCurrentCutscene();
 
                 EndDialogue();

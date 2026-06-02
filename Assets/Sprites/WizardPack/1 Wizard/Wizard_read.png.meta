@@ -46,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -125,12 +125,12 @@ TextureImporter:
       name: Wizard_read_0
       rect:
         serializedVersion: 2
-        x: 5
+        x: 6
         y: 0
-        width: 23
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 21
+        height: 39
+      alignment: 9
+      pivot: {x: 0.41397494, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -147,12 +147,12 @@ TextureImporter:
       name: Wizard_read_1
       rect:
         serializedVersion: 2
-        x: 53
+        x: 54
         y: 0
-        width: 24
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 22
+        height: 39
+      alignment: 9
+      pivot: {x: 0.42116946, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -169,12 +169,12 @@ TextureImporter:
       name: Wizard_read_2
       rect:
         serializedVersion: 2
-        x: 101
+        x: 102
         y: 0
-        width: 24
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 22
+        height: 39
+      alignment: 9
+      pivot: {x: 0.42773855, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -191,12 +191,12 @@ TextureImporter:
       name: Wizard_read_3
       rect:
         serializedVersion: 2
-        x: 149
+        x: 150
         y: 0
-        width: 23
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 21
+        height: 39
+      alignment: 9
+      pivot: {x: 0.43806165, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -213,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 0e50f4f4874203040b821471e2532db4
     internalID: 0
     vertices: []
     indices: 
@@ -221,7 +221,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Wizard_read_0: -6728265187229316594
       Wizard_read_1: -6878652115631342559

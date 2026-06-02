@@ -55,7 +55,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -93,7 +93,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -134,12 +134,12 @@ TextureImporter:
       name: Wizard_cast_0
       rect:
         serializedVersion: 2
-        x: 4
+        x: 5
         y: 0
-        width: 24
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 22
+        height: 39
+      alignment: 9
+      pivot: {x: 0.4253174, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +156,12 @@ TextureImporter:
       name: Wizard_cast_1
       rect:
         serializedVersion: 2
-        x: 51
+        x: 52
         y: 0
-        width: 24
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 22
+        height: 39
+      alignment: 9
+      pivot: {x: 0.47939768, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +178,12 @@ TextureImporter:
       name: Wizard_cast_2
       rect:
         serializedVersion: 2
-        x: 99
+        x: 100
         y: 0
-        width: 24
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 22
+        height: 39
+      alignment: 9
+      pivot: {x: 0.47682294, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -200,12 +200,12 @@ TextureImporter:
       name: Wizard_cast_3
       rect:
         serializedVersion: 2
-        x: 148
+        x: 149
         y: 0
-        width: 32
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 30
+        height: 39
+      alignment: 9
+      pivot: {x: 0.31681314, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -222,12 +222,12 @@ TextureImporter:
       name: Wizard_cast_4
       rect:
         serializedVersion: 2
-        x: 197
+        x: 198
         y: 0
-        width: 37
-        height: 46
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 35
+        height: 45
+      alignment: 9
+      pivot: {x: 0.24262172, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -244,12 +244,12 @@ TextureImporter:
       name: Wizard_cast_5
       rect:
         serializedVersion: 2
-        x: 245
+        x: 246
         y: 0
-        width: 24
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 37
+        height: 47
+      alignment: 9
+      pivot: {x: 0.21978347, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -262,33 +262,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Wizard_cast_6
-      rect:
-        serializedVersion: 2
-        x: 259
-        y: 26
-        width: 25
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 16330eba4167d7890800000000000000
-      internalID: -7458675576700652703
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 4d8072cb720e10146a30fea58e5791a8
     internalID: 0
     vertices: []
     indices: 
@@ -296,7 +274,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Wizard_cast_0: 1725448589255068552
       Wizard_cast_1: 3517275071084244937
