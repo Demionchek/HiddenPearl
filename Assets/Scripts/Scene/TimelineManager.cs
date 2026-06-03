@@ -134,8 +134,9 @@ public class TimelineManager : MonoBehaviour
 
     public bool IsCutsceneAllowMovement()
     {
+        bool isPlaying = IsCutscenePlaying();
         bool isAllowMovement = _cutscenes.Length > 0 && _cutscenesAllowMovement.Contains(_currentCutsceneIndex);
-        return isAllowMovement;
+        return !isPlaying || isAllowMovement;
     }
 
     public void PauseCurrentCutscene()

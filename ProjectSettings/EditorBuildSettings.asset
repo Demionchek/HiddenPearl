@@ -18,8 +18,11 @@ EditorBuildSettings:
     path: Assets/Scenes/SeaBattle.unity
     guid: 16dad048fcc3f6d4cbefff90fe2b664d
   - enabled: 1
-    path: Assets/Scenes/IslandLevel.unity
+    path: Assets/Scenes/WizardIslandLevel.unity
     guid: eaf27a8e09f44a942b26ea4e13b2dd34
+  - enabled: 1
+    path: Assets/Scenes/TowerLevel1.unity
+    guid: ff45869c8b68ffc48ab478f3a41a4592
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6bbab88d8d7bf9045bfead1ffd797fe8, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
