@@ -32,6 +32,7 @@ namespace DefaultNamespace
         [SerializeField] private TextMeshProUGUI dialogueText;
         [SerializeField] private float textSpeed = 0.05f;
         [SerializeField] private float delayAfterLines = 1.5f;
+        [SerializeField] private bool initOnStart = false;
 
         [SerializeField] private List<DialogTimelineTrigger> timelineTriggers = new List<DialogTimelineTrigger>();
 
@@ -58,6 +59,8 @@ namespace DefaultNamespace
 
             writer = dialogueText.gameObject.GetComponent<TMPWriter>();
             if (writer == null)  writer = dialogueText.gameObject.AddComponent<TMPWriter>();
+
+            if (initOnStart) InitDialogue(0);
         }
 
         public void InitDialogue(int index)

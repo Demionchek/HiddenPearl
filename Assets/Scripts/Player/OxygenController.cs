@@ -1,4 +1,5 @@
 using System;
+using Spells;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -15,8 +16,11 @@ namespace Player
         private float currOxygen;
         private float lastDamageTime = -1;
         
-        [Inject] 
+        [Inject]
         private PlayerController player;
+
+        [Inject]
+        private AmuletSpell amuletSpell;
 
         private void Start()
         {
@@ -40,7 +44,7 @@ namespace Player
         
         private void Update()
         {
-            if (player.isDiving)
+            if (player.isDiving && !amuletSpell.IsActive)
             {
                 currOxygen -= Time.deltaTime;
                 oxygenImage.fillAmount = currOxygen / oxygenMax;

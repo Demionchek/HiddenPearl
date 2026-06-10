@@ -1,6 +1,8 @@
 using Animations;
 using Camera;
+using Mana;
 using Player;
+using Spells;
 using UnityEngine;
 using Zenject;
 
@@ -23,6 +25,10 @@ namespace DefaultNamespace.DependencyInjection
                 Container.Bind<DialogueSystem>().FromComponentInHierarchy().AsSingle();
             if (FindAnyObjectByType<CheckPoints>() != null)
                 Container.Bind<CheckPoints>().FromComponentInHierarchy().AsSingle();
+            if (FindAnyObjectByType<ManaController>() != null)
+                Container.Bind<ManaController>().FromComponentInHierarchy().AsSingle();
+            if (FindAnyObjectByType<AmuletSpell>() != null)
+                Container.Bind<AmuletSpell>().FromComponentInHierarchy().AsSingle();
         }
     }
 }

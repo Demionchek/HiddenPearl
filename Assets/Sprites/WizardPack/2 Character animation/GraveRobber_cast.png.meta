@@ -134,9 +134,9 @@ TextureImporter:
       name: GraveRobber_cast_0
       rect:
         serializedVersion: 2
-        x: 9
+        x: 5
         y: 0
-        width: 16
+        width: 20
         height: 33
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -156,12 +156,12 @@ TextureImporter:
       name: GraveRobber_cast_1
       rect:
         serializedVersion: 2
-        x: 56
+        x: 53
         y: 0
-        width: 17
+        width: 20
         height: 33
       alignment: 9
-      pivot: {x: 0.5328706, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +178,12 @@ TextureImporter:
       name: GraveRobber_cast_2
       rect:
         serializedVersion: 2
-        x: 104
+        x: 101
         y: 0
-        width: 17
+        width: 20
         height: 33
       alignment: 9
-      pivot: {x: 0.5370214, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -205,7 +205,7 @@ TextureImporter:
         width: 30
         height: 33
       alignment: 9
-      pivot: {x: 0.27479705, y: 0}
+      pivot: {x: 0.2, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -227,7 +227,7 @@ TextureImporter:
         width: 34
         height: 33
       alignment: 9
-      pivot: {x: 0.24610946, y: 0}
+      pivot: {x: 0.175, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -249,7 +249,7 @@ TextureImporter:
         width: 35
         height: 33
       alignment: 9
-      pivot: {x: 0.2291408, y: 0}
+      pivot: {x: 0.175, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []

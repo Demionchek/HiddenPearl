@@ -5,6 +5,8 @@ using Animations;
 using Camera;
 using DefaultNamespace;
 using Interfaces;
+using Mana;
+using Spells;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -43,12 +45,13 @@ namespace Player
         [SerializeField] private int MaxHealth;
         [SerializeField] private OxygenController oxygenController;
         [SerializeField] private RandomSoundPlayer attackPlayerSound;
+        [SerializeField] private RandomSoundPlayer spellAmuletSound;
         [SerializeField] private RandomSoundPlayer hitPlayerSound;
         [SerializeField] private RandomSoundPlayer jumpPlayerSound;
         [SerializeField] private RandomSoundPlayer doubleJumpPlayerSound;
         [SerializeField] private RandomSoundPlayer deathPlayerSound;
-        [SerializeField] private RandomSoundPlayer WaterInPlayerSound;
-        [SerializeField] private RandomSoundPlayer WaterOutPlayerSound;
+        [SerializeField] private RandomSoundPlayer waterInPlayerSound;
+        [SerializeField] private RandomSoundPlayer waterOutPlayerSound;
         [SerializeField] private Image fadeScreen;
 
         [Inject]
@@ -65,6 +68,12 @@ namespace Player
 
         [Inject]
         private TimelineManager timelineManager;
+
+        [Inject]
+        private ManaController manaController;
+
+        [Inject]
+        private AmuletSpell amuletSpell;
 
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
@@ -84,6 +93,8 @@ namespace Player
         private bool isDoubleJumping = false;
         private bool isRolling = false;
         private bool isClimbing = false;
+        private bool isCasting = false;
+        private System.Action pendingSpellAction;
         public Action<int> healthChanged { get; set; }
 
         public int GetHealth()
@@ -157,11 +168,44 @@ namespace Player
 
             if (animController.isAttacking || isDead || dialogueSystem.isDialogRunning || animController.isRolling) return;
 
-            HandleAttack();
-            HandleJump();
-            HandleRoll();
-            HandleClimb();
-            HandleDuck();
+            HandleSpell();
+
+            if (!isCasting)
+            {
+                HandleAttack();
+                HandleJump();
+                HandleRoll();
+                HandleClimb();
+                HandleDuck();
+            }
+        }
+
+        private void HandleSpell()
+        {
+            if (!inputHandler.Spell1Action) return;
+
+            if (amuletSpell.IsActive)
+            {
+                amuletSpell.Cancel();
+                return;
+            }
+
+            if (isCasting) return;
+
+            if (!manaController.CanSpend(1)) return;
+
+            isCasting = true;
+            pendingSpellAction = () => amuletSpell.TryActivate();
+            animController.SetTrigger("cast");
+            spellAmuletSound.PlayRandomSoundNow();
+        }
+
+        public void OnCastAnimationComplete()
+        {
+            if (!isCasting) return;
+            isCasting = false;
+            pendingSpellAction?.Invoke();
+            pendingSpellAction = null;
         }
 
         private void HandleDuck()
@@ -184,7 +228,7 @@ namespace Player
 
         private void FixedUpdate()
         {
-            if (isDead || dialogueSystem.isDialogRunning || animController.isRolling || !timelineManager.IsCutsceneAllowMovement())
+            if (isDead || dialogueSystem.isDialogRunning || animController.isRolling || !timelineManager.IsCutsceneAllowMovement() || isCasting)
                 return;
 
             if (isClimbing)
@@ -519,7 +563,7 @@ namespace Player
 
             if (!isDiving)
             {
-                WaterInPlayerSound.PlayRandomSoundNow();
+                waterInPlayerSound.PlayRandomSoundNow();
 
                 isDiving = true;
                 hasDive?.Invoke(true);
@@ -535,7 +579,7 @@ namespace Player
 
             SwitchColliderSwimming(false);
 
-            WaterOutPlayerSound.PlayRandomSoundNow();
+            waterOutPlayerSound.PlayRandomSoundNow();
 
             if (isDiving)
             {
@@ -660,6 +704,8 @@ namespace Player
         public void Hit()
         {
             if (isDead || dialogueSystem.isDialogRunning || animController.isRolling) return;
+
+            if (amuletSpell.TryAbsorb()) return;
 
             SetHealth(Health - 1);
 

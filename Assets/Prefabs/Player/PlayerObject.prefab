@@ -175,6 +175,55 @@ MonoBehaviour:
   - {x: -0.0044527054, y: 0.17654848, z: 0}
   - {x: -0.088807106, y: 0.15857181, z: 0}
   - {x: -0.15229893, y: 0.09628907, z: 0}
+--- !u!1 &931604654133788468
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3602465416514849409}
+  - component: {fileID: 5420144690538899884}
+  m_Layer: 3
+  m_Name: castAmuletSound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3602465416514849409
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931604654133788468}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9128745979972590720}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5420144690538899884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931604654133788468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e213ccc1b054432490166d1e34cffe2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundClips:
+  - {fileID: 8300000, guid: 5049a5288d09ed342afe41b254002abe, type: 3}
+  audioSource: {fileID: 9197048069466158785}
+  cooldownDuration: 1
+  doNotInterrupt: 0
 --- !u!1 &1576169249974775661
 GameObject:
   m_ObjectHideFlags: 0
@@ -445,6 +494,7 @@ Transform:
   - {fileID: 5150036108649421706}
   - {fileID: 6502899384377921899}
   - {fileID: 4775645919104944897}
+  - {fileID: 3602465416514849409}
   - {fileID: 2709361277323822587}
   - {fileID: 5053883332561929979}
   - {fileID: 822356292574969594}
@@ -452,6 +502,7 @@ Transform:
   - {fileID: 8875875923996673328}
   - {fileID: 1320784445383729974}
   - {fileID: 89913281071104307}
+  - {fileID: 3424312652360555996}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &448497847852466353
@@ -694,12 +745,13 @@ MonoBehaviour:
   MaxHealth: 3
   oxygenController: {fileID: 5285789566787568750}
   attackPlayerSound: {fileID: 9209431881281644947}
+  spellAmuletSound: {fileID: 5420144690538899884}
   hitPlayerSound: {fileID: 4965538142887147751}
   jumpPlayerSound: {fileID: 569887102807863641}
   doubleJumpPlayerSound: {fileID: 6314355107293706888}
   deathPlayerSound: {fileID: 4259944272942709419}
-  WaterInPlayerSound: {fileID: 1753296006828150264}
-  WaterOutPlayerSound: {fileID: 4432775614797687266}
+  waterInPlayerSound: {fileID: 1753296006828150264}
+  waterOutPlayerSound: {fileID: 4432775614797687266}
   fadeScreen: {fileID: 0}
 --- !u!114 &8138380478024111344
 MonoBehaviour:
@@ -855,6 +907,83 @@ MonoBehaviour:
   audioSource: {fileID: 9197048069466158785}
   cooldownDuration: 1
   doNotInterrupt: 0
+--- !u!1 &5317016284168646379
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3424312652360555996}
+  m_Layer: 3
+  m_Name: Spells
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3424312652360555996
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5317016284168646379}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8304251721873218502}
+  m_Father: {fileID: 9128745979972590720}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5941136799724258158
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8304251721873218502}
+  - component: {fileID: 4347739327896644277}
+  m_Layer: 3
+  m_Name: Amulet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8304251721873218502
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5941136799724258158}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3424312652360555996}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4347739327896644277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5941136799724258158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b213ecbaedc74e8419626dd511c80c54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Spells.AmuletSpell
+  shieldVisual: {fileID: 106572379042271380}
 --- !u!1 &6478267494477240104
 GameObject:
   m_ObjectHideFlags: 0

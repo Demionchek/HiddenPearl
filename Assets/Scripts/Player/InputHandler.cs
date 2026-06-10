@@ -11,12 +11,14 @@ namespace Player
         public bool AttackPressed { get; private set; }
         public bool DodgeAction { get; private set; }
         public bool DuckAction { get; private set; }
+        public bool Spell1Action { get; private set; }
 
         private InputAction moveAction;
         private InputAction jumpAction;
         private InputAction attackAction;
         private InputAction dodgeAction;
         private InputAction duckAction;
+        private InputAction spell1Action;
 
         private void Awake()
         {
@@ -27,6 +29,7 @@ namespace Player
             attackAction = playerInput.actions["Attack"];
             dodgeAction = playerInput.actions["Dodge"];
             duckAction = playerInput.actions["Duck"];
+            spell1Action = playerInput.actions["Spell1"];
         }
 
         private void Update()
@@ -41,6 +44,7 @@ namespace Player
             JumpPressed = false;
             AttackPressed = false;
             DodgeAction = false;
+            Spell1Action = false;
         }
 
 
@@ -65,6 +69,14 @@ namespace Player
             if (context.isPressed)
             {
                 DodgeAction = true;
+            }
+        }
+
+        private void OnSpell1(InputValue context)
+        {
+            if (context.isPressed)
+            {
+                Spell1Action = true;
             }
         }
     }
