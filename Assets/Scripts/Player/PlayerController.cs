@@ -143,16 +143,19 @@ namespace Player
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             boxTriggerCollider = GetComponent<BoxCollider2D>();
             animController = GetComponent<PlayerAnimationController>();
-            int currentHealth = PlayerPrefs.GetInt("Health");
-            if (SceneManager.GetActiveScene().buildIndex != 1)
-                MaxHealth = PlayerPrefs.GetInt("Health");
-            else
+            if (PlayerPrefs.HasKey("Health"))
             {
-                 PlayerPrefs.SetInt("Health", 3);
-                 currentHealth = PlayerPrefs.GetInt("Health");
-                 MaxHealth = 3;
+                int currentHealth = PlayerPrefs.GetInt("Health");
+                if (SceneManager.GetActiveScene().buildIndex != 1)
+                    MaxHealth = PlayerPrefs.GetInt("Health");
+                else
+                {
+                     PlayerPrefs.SetInt("Health", 3);
+                     currentHealth = PlayerPrefs.GetInt("Health");
+                     MaxHealth = 3;
+                }
+                Debug.Log("Health: " + currentHealth);
             }
-            Debug.Log("Health: " + currentHealth);
 
             PlayerPrefs.Save();
 
@@ -231,6 +234,8 @@ namespace Player
             if (isDead || dialogueSystem.isDialogRunning || animController.isRolling || !timelineManager.IsCutsceneAllowMovement() || isCasting)
                 return;
 
+            CheckGroundOverlap();
+
             if (isClimbing)
             {
                 HandleClimbingMovement();
@@ -242,6 +247,29 @@ namespace Player
             else
             {
                 HandleGroundMovement();
+            }
+        }
+
+        // Вторичная проверка земли — страхует от ложного отрыва на движущейся вниз платформе
+        private void CheckGroundOverlap()
+        {
+            if (isSwimming || isClimbing) return;
+
+            Vector2 origin = (Vector2)transform.position
+                             + groundColliderOffset
+                             + Vector2.down * (groundColliderSize.y * 0.5f + 0.05f);
+
+            Collider2D hit = Physics2D.OverlapBox(
+                origin,
+                new Vector2(groundColliderSize.x * 0.8f, 0.1f),
+                0f,
+                LayerMask.GetMask("Ground", "Platform", "Wall")
+            );
+
+            if (hit != null)
+            {
+                IsGrounded = true;
+                isDoubleJumping = false;
             }
         }
 
