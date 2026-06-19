@@ -119,7 +119,9 @@ namespace Player
             healthChanged?.Invoke(Health);
         }
 
-        public bool IsGrounded { get; private set; }
+        public bool IsGrounded => _isGroundedByCollision || _isGroundedByOverlap;
+        private bool _isGroundedByCollision;
+        private bool _isGroundedByOverlap;
         public float CurrentSpeed { get; private set; }
         public bool isDiving { get; private set; }
         private bool _previousIsDiving;
@@ -250,10 +252,15 @@ namespace Player
             }
         }
 
-        // Вторичная проверка земли — страхует от ложного отрыва на движущейся вниз платформе
+        // Вторичная проверка земли — страхует от ложного отрыва на движущейся вниз платформе.
+        // Активна только когда игрок не летит вверх (иначе ломает анимацию прыжка).
         private void CheckGroundOverlap()
         {
-            if (isSwimming || isClimbing) return;
+            if (isSwimming || isClimbing || rb.linearVelocity.y > 0.5f)
+            {
+                _isGroundedByOverlap = false;
+                return;
+            }
 
             Vector2 origin = (Vector2)transform.position
                              + groundColliderOffset
@@ -266,11 +273,10 @@ namespace Player
                 LayerMask.GetMask("Ground", "Platform", "Wall")
             );
 
-            if (hit != null)
-            {
-                IsGrounded = true;
+            _isGroundedByOverlap = hit != null;
+
+            if (_isGroundedByOverlap)
                 isDoubleJumping = false;
-            }
         }
 
         private void HandleGroundMovement()
@@ -829,7 +835,7 @@ namespace Player
             {
                 if (contact.normal.y > 0.5f)
                 {
-                    IsGrounded = true;
+                    _isGroundedByCollision = true;
                     isDoubleJumping = false;
                     if (isClimbing)
                     {
@@ -839,12 +845,12 @@ namespace Player
                 }
             }
 
-            IsGrounded = false;
+            _isGroundedByCollision = false;
         }
 
         private void OnCollisionExit2D(Collision2D collision)
         {
-            IsGrounded = false;
+            _isGroundedByCollision = false;
 
             if (collision.collider.gameObject.TryGetComponent(out SurfaceEffector2D surfaceEffector))
             {
