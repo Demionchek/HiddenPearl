@@ -145,20 +145,24 @@ public class TimelineManager : MonoBehaviour
             return;
 
         pauseTime = _currentCutscene.time;
-        _currentCutscene.Pause();
-        _currentCutscene.time = pauseTime;
+        _currentCutscene.playableGraph.GetRootPlayable(0).SetSpeed(0);
     }
 
     public void ResumeCurrentCutscene()
     {
         if (IsCutscenePaused())
         {
-            _currentCutscene.Resume();
+            _currentCutscene.playableGraph.GetRootPlayable(0).SetSpeed(1);
             _currentCutscene.time = pauseTime;
         }
     }
 
-    public bool IsCutscenePaused() => _currentCutscene != null && _currentCutscene.state == PlayState.Paused;
+    public bool IsCutscenePaused()
+    {
+        if (_currentCutscene == null || !_currentCutscene.playableGraph.IsValid())
+            return false;
+        return _currentCutscene.playableGraph.GetRootPlayable(0).GetSpeed() == 0;
+    }
 
     public PlayableDirector GetCutscene() => _currentCutscene;
 }

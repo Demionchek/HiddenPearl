@@ -35,6 +35,7 @@ namespace Animations
         }
 
         public void SetTrigger(string trigger) => animator.SetTrigger(trigger);
+        public void ResetTrigger(string trigger) => animator.ResetTrigger(trigger);
         public void SetBool(string boolName, bool value) => animator.SetBool(boolName, value);
         public void SetInt(string intName, int value) => animator.SetInteger(intName, value);
 

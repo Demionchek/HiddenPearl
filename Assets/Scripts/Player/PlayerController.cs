@@ -189,6 +189,8 @@ namespace Player
         {
             if (!inputHandler.Spell1Action) return;
 
+
+
             if (amuletSpell.IsActive)
             {
                 amuletSpell.Cancel();
@@ -201,6 +203,7 @@ namespace Player
 
             isCasting = true;
             pendingSpellAction = () => amuletSpell.TryActivate();
+            animController.ResetTrigger("cast");
             animController.SetTrigger("cast");
             spellAmuletSound.PlayRandomSoundNow();
         }
@@ -211,6 +214,7 @@ namespace Player
             isCasting = false;
             pendingSpellAction?.Invoke();
             pendingSpellAction = null;
+
         }
 
         private void HandleDuck()
@@ -580,6 +584,8 @@ namespace Player
         private void EnterWater()
         {
             rb.gravityScale = 0.5f;
+            animController.isAttacking = false;
+            animController.isRolling = false;
             StartCoroutine(WaitForDive());
         }
 
@@ -624,6 +630,7 @@ namespace Player
 
         private void HandleAttack()
         {
+            if (isSwimming) return;
             if (inputHandler.AttackPressed)
             {
                 if (rb.linearVelocity.magnitude > 0.1f)

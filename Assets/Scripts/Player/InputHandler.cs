@@ -32,8 +32,25 @@ namespace Player
             spell1Action = playerInput.actions["Spell1"];
         }
 
+        public bool InputEnabled { get; private set; } = true;
+
+        public void SetInputEnabled(bool enabled)
+        {
+            InputEnabled = enabled;
+            if (!enabled)
+            {
+                MoveInput = Vector2.zero;
+                JumpPressed = false;
+                AttackPressed = false;
+                DodgeAction = false;
+                DuckAction = false;
+                Spell1Action = false;
+            }
+        }
+
         private void Update()
         {
+            if (!InputEnabled) return;
             MoveInput = moveAction.ReadValue<Vector2>();
             DuckAction = duckAction.IsPressed();
         }
@@ -50,34 +67,26 @@ namespace Player
 
         private void OnJump(InputValue context)
         {
-            if (context.isPressed)
-            {
+            if (InputEnabled && context.isPressed)
                 JumpPressed = true;
-            }
         }
 
         private void OnAttack(InputValue context)
         {
-            if (context.isPressed)
-            {
+            if (InputEnabled && context.isPressed)
                 AttackPressed = true;
-            }
         }
 
         private void OnDodge(InputValue context)
         {
-            if (context.isPressed)
-            {
+            if (InputEnabled && context.isPressed)
                 DodgeAction = true;
-            }
         }
 
         private void OnSpell1(InputValue context)
         {
-            if (context.isPressed)
-            {
+            if (InputEnabled && context.isPressed)
                 Spell1Action = true;
-            }
         }
     }
 }
