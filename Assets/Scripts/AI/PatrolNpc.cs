@@ -1,4 +1,5 @@
 using System.Collections;
+using Interfaces;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -21,6 +22,8 @@ namespace AI
         [Header("Attack")]
         [SerializeField] private float attackDelay = 1f;
         [SerializeField] private float resumeDelay = 0.5f;
+        [SerializeField] private float attackHitRadius = 0.4f;
+        [SerializeField] private Vector2 attackHitOffset = new Vector2(0.3f, 0f);
 
         [Header("Other")]
         [SerializeField] private Light2D light2Dr;
@@ -179,6 +182,18 @@ namespace AI
             _state = State.Idle; // сбрасываем без SetTrigger повторно
         }
 
+        // Вызывается Animation Event в момент удара
+        public void DealDamage()
+        {
+            Vector2 hitCenter = (Vector2)transform.position + attackHitOffset * _facingSign;
+
+            Collider2D[] hits = Physics2D.OverlapCircleAll(hitCenter, attackHitRadius, _playerLayerMask);
+            foreach (var col in hits)
+            {
+                col.GetComponent<IHittable>()?.Hit();
+            }
+        }
+
         private void OnDrawGizmosSelected()
         {
             if (patrolPoints == null) return;
@@ -196,6 +211,11 @@ namespace AI
                     Gizmos.DrawLine(patrolPoints[i].position, patrolPoints[i + 1].position);
                 }
             }
+
+            // Хитбокс атаки
+            Gizmos.color = Color.red;
+            float f = Application.isPlaying ? _facingSign : 1f;
+            Gizmos.DrawWireSphere((Vector2)transform.position + attackHitOffset * f, attackHitRadius);
 
             // Зона обнаружения
             Gizmos.color = Color.cyan;

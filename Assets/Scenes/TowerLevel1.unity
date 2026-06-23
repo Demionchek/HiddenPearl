@@ -18725,6 +18725,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 3d19118ac27f40d4ba93330ac55a1fe8, type: 2}
     - {fileID: 11400000, guid: 91af25aeb9d24d345a1b7aa6e70bc282, type: 2}
     - {fileID: 11400000, guid: f03a3d2848a535a4bb4e5c05d5c282e2, type: 2}
+    - {fileID: 11400000, guid: 047f9d2ca8fcf6441bec7835ef14d417, type: 2}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
@@ -18826,6 +18827,18 @@ MonoBehaviour:
           m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
           m_MethodName: Play
           m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1594046043}
+          m_TargetAssemblyTypeName: Animations.PlayerAnimationController, Assembly-CSharp
+          m_MethodName: SetSpeed
+          m_Mode: 4
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -18966,6 +18979,20 @@ MonoBehaviour:
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: remove
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1800271476}
+          m_TargetAssemblyTypeName: DefaultNamespace.SwitchSceneTrigger, Assembly-CSharp
+          m_MethodName: Switch
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 6
+            m_FloatArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!4 &778697036
@@ -34984,6 +35011,17 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1594046024}
   m_Enabled: 1
+--- !u!114 &1594046043 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2156063366215915465, guid: 339a0db8c5b430c49a983759e13528b9, type: 3}
+  m_PrefabInstance: {fileID: 1594046023}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594046024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0c7d5ad7124cb2b33ab6e8c4e44087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1595828881
 GameObject:
   m_ObjectHideFlags: 0
@@ -51578,6 +51616,7 @@ Transform:
   - {fileID: 413704703}
   - {fileID: 1842170699}
   - {fileID: 660318014}
+  - {fileID: 1831181984}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1782211358
@@ -51615,7 +51654,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 0
+  orthographic size: 1.6071428
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -51644,7 +51683,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.PixelPerfectCamera
   m_ComponentVersion: 1
-  m_AssetsPPU: 52
+  m_AssetsPPU: 56
   m_RefResolutionX: 320
   m_RefResolutionY: 180
   m_CropFrame: 0
@@ -53073,6 +53112,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4334954a7a9c30a43a2fed7b8841c65c, type: 3}
+--- !u!1 &1831181983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1831181984}
+  - component: {fileID: 1831181985}
+  m_Layer: 0
+  m_Name: ManaController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1831181984
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831181983}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1782211357}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1831181985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831181983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85ccc6415bb1659449b1c554161d4316, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Mana.ManaController
+  manaRegenPerSecond: 0.05
 --- !u!1 &1833673228
 GameObject:
   m_ObjectHideFlags: 0
@@ -56177,7 +56261,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 15.599976, y: -15.600037}
+  m_AnchoredPosition: {x: 15.599976, y: -15.600098}
   m_SizeDelta: {x: 70, y: 60}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1957030145
@@ -59142,11 +59226,8 @@ MonoBehaviour:
   dialogueText: {fileID: 2119987329}
   textSpeed: 0.05
   delayAfterLines: 1.5
-  timelineTriggers:
-  - dialogType: 0
-    timelineIndex: 0
-  - dialogType: 1
-    timelineIndex: 1
+  initOnStart: 0
+  timelineTriggers: []
   isDialogRunning: 0
 --- !u!1 &2091800315
 GameObject:

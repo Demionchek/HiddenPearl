@@ -1,4 +1,4 @@
-using System;
+using Player;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -14,11 +14,18 @@ namespace DefaultNamespace
         private Rigidbody2D rb;
         private RandomSoundPlayer audio;
 
+        private bool _ignoreFirstGroundHit = true;
+
         private void Start()
         {
             rb = GetComponent<Rigidbody2D>();
             audio = GetComponent<RandomSoundPlayer>();
             transform.position = spawner.transform.position;
+        }
+
+        private void OnEnable()
+        {
+            _ignoreFirstGroundHit = true;
         }
 
         private void FixedUpdate()
@@ -38,8 +45,19 @@ namespace DefaultNamespace
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
+                other.GetComponentInParent<OxygenController>()?.FillOxygen();
                 Return();
                 audio.PlayRandomSoundNow();
+            }
+
+            if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                if (_ignoreFirstGroundHit)
+                {
+                    _ignoreFirstGroundHit = false;
+                    return;
+                }
+                Return();
             }
         }
     }

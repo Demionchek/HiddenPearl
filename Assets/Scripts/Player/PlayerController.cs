@@ -109,7 +109,8 @@ namespace Player
 
         public void IncreaseHealth(int amount)
         {
-            MaxHealth += amount;
+            MaxHealth = Mathf.Clamp(MaxHealth + amount, 1, MaxHealthCap);
+            SaveMaxHealth();
             SetHealth(MaxHealth);
         }
 
@@ -138,6 +139,10 @@ namespace Player
 
         public Action<bool> hasDive { get; set; }
 
+        private const string MaxHealthKey = "MaxHealth";
+        private const int DefaultMaxHealth = 3;
+        private const int MaxHealthCap = 5;
+
         private void Awake()
         {
             Instance = this;
@@ -145,25 +150,26 @@ namespace Player
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             boxTriggerCollider = GetComponent<BoxCollider2D>();
             animController = GetComponent<PlayerAnimationController>();
-            if (PlayerPrefs.HasKey("Health"))
+
+            if (SceneManager.GetActiveScene().buildIndex == 1)
             {
-                int currentHealth = PlayerPrefs.GetInt("Health");
-                if (SceneManager.GetActiveScene().buildIndex != 1)
-                    MaxHealth = PlayerPrefs.GetInt("Health");
-                else
-                {
-                     PlayerPrefs.SetInt("Health", 3);
-                     currentHealth = PlayerPrefs.GetInt("Health");
-                     MaxHealth = 3;
-                }
-                Debug.Log("Health: " + currentHealth);
+                MaxHealth = DefaultMaxHealth;
+                PlayerPrefs.SetInt(MaxHealthKey, MaxHealth);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                MaxHealth = PlayerPrefs.GetInt(MaxHealthKey, DefaultMaxHealth);
             }
 
-            PlayerPrefs.Save();
-
-            if (MaxHealth > 5) MaxHealth = 5;
-
+            MaxHealth = Mathf.Clamp(MaxHealth, 1, MaxHealthCap);
             SetHealth(MaxHealth);
+        }
+
+        public void SaveMaxHealth()
+        {
+            PlayerPrefs.SetInt(MaxHealthKey, MaxHealth);
+            PlayerPrefs.Save();
         }
 
         private void Update()

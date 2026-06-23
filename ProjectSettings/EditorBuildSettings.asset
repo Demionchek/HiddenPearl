@@ -23,6 +23,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TowerLevel1.unity
     guid: ff45869c8b68ffc48ab478f3a41a4592
+  - enabled: 1
+    path: Assets/Scenes/WizardIslandLevel2.unity
+    guid: 414f8e819529dde47bcf3e420d8a18e1
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6bbab88d8d7bf9045bfead1ffd797fe8, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

@@ -27,7 +27,6 @@ namespace DefaultNamespace
             LayerMask playerMask = LayerMask.GetMask("Player");
             if ((playerMask.value & (1 << other.gameObject.layer)) == 0) return;
 
-            _triggered = true;
             Check();
         }
 
@@ -44,8 +43,8 @@ namespace DefaultNamespace
                     return;
                 }
             }
-
             onRequirementsMet?.Invoke();
+            _triggered = true;
         }
     }
 }

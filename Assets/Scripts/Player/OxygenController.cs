@@ -47,17 +47,19 @@ namespace Player
             if (player.isDiving && !amuletSpell.IsActive)
             {
                 currOxygen -= Time.deltaTime;
-                oxygenImage.fillAmount = currOxygen / oxygenMax;
-            }
 
-            if (currOxygen <= 0)
-            {
-                if (Time.time > lastDamageTime + oxygenDamageDelay)
+                if (currOxygen <= 0)
                 {
-                    player.Hit();
-                    lastDamageTime = Time.time;
+                    if (Time.time > lastDamageTime + oxygenDamageDelay)
+                    {
+                        player.Hit();
+                        lastDamageTime = Time.time;
+                    }
                 }
             }
+
+            if (player.isDiving)
+                oxygenImage.fillAmount = currOxygen / oxygenMax;
         }
     }
 }

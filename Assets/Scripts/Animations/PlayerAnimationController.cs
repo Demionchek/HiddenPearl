@@ -34,6 +34,8 @@ namespace Animations
             animator.SetBool("IsGrounded", isGrounded);
         }
 
+        public void SetSpeed(float speed) => animator.SetFloat(SPEED_S, speed);
+
         public void SetTrigger(string trigger) => animator.SetTrigger(trigger);
         public void ResetTrigger(string trigger) => animator.ResetTrigger(trigger);
         public void SetBool(string boolName, bool value) => animator.SetBool(boolName, value);
