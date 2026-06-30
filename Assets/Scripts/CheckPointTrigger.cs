@@ -16,6 +16,7 @@ namespace DefaultNamespace
             if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
                 checkPoints.SetCurrentCheckpoint(checkPointIndex);
+                Debug.Log(checkPointIndex);
                 gameObject.SetActive(false);
             }
         }
